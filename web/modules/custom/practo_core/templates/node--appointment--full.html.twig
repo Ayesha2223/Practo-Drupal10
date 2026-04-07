@@ -1,0 +1,76 @@
+{#
+/**
+ * @file
+ * Theme override for appointment nodes in full view mode.
+ */
+#}
+
+<article{{ attributes.addClass('node', 'node--type-appointment', 'node--view-mode-full') }}>
+  
+  <div class="appointment-full-view">
+    
+    <div class="appointment-header">
+      <h1>Appointment Details</h1>
+      
+      {% if content.field_booking_id %}
+        <p class="booking-id"><strong>Booking ID:</strong> {{ content.field_booking_id }}</p>
+      {% endif %}
+      
+      {% if content.field_appointment_status %}
+        <div class="appointment-status-badge">
+          {{ content.field_appointment_status }}
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="appointment-details">
+      
+      <div class="appointment-section">
+        <h2>Doctor Information</h2>
+        {% if content.field_doctor_ref %}
+          {{ content.field_doctor_ref }}
+        {% endif %}
+      </div>
+      
+      <div class="appointment-section">
+        <h2>Patient Information</h2>
+        {% if content.field_patient_name %}
+          <p><strong>Name:</strong> {{ content.field_patient_name }}</p>
+        {% endif %}
+        
+        {% if content.field_patient_age %}
+          <p><strong>Age:</strong> {{ content.field_patient_age }}</p>
+        {% endif %}
+        
+        {% if content.field_patient_gender %}
+          <p><strong>Gender:</strong> {{ content.field_patient_gender }}</p>
+        {% endif %}
+        
+        {% if content.field_contact_number %}
+          <p><strong>Contact:</strong> {{ content.field_contact_number }}</p>
+        {% endif %}
+      </div>
+      
+      <div class="appointment-section">
+        <h2>Appointment Schedule</h2>
+        {% if content.field_appointment_date %}
+          <p><strong>Date:</strong> {{ content.field_appointment_date }}</p>
+        {% endif %}
+        
+        {% if content.field_appointment_time %}
+          <p><strong>Time:</strong> {{ content.field_appointment_time }}</p>
+        {% endif %}
+      </div>
+      
+      {% if content.field_reason_visit %}
+        <div class="appointment-section">
+          <h2>Reason for Visit</h2>
+          {{ content.field_reason_visit }}
+        </div>
+      {% endif %}
+      
+    </div>
+    
+  </div>
+  
+</article>

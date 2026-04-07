@@ -1,0 +1,27 @@
+<div class="article-page">
+  <div class="container">
+    <article class="article-full">
+      <div class="article-header">
+        <span class="article-cat">{{ article.category }}</span>
+        <h1>{{ article.title }}</h1>
+        <div class="article-meta-full">
+          <span><i class="fas fa-user"></i> {{ article.author }}</span>
+          <span><i class="fas fa-calendar"></i> {{ article.date }}</span>
+        </div>
+      </div>
+      
+      <div class="article-content-full">
+        {{ article.content|raw }}
+      </div>
+      
+      <div class="article-footer">
+        <a href="{{ practo_safe_internal('/health-articles') }}" class="btn btn-outline-primary">← Back to Articles</a>
+      </div>
+    </article>
+    
+    <div class="related-articles">
+      <h3>Related Articles</h3>
+      <p>More health tips coming soon...</p>
+    </div>
+  </div>
+</div>

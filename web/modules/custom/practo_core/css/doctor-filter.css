@@ -1,0 +1,41 @@
+/**
+ * @file
+ * Styles for horizontal doctor filter form.
+ */
+
+.doctor-filter-form-horizontal {
+  width: 100%;
+}
+
+.filters-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.filters-row > .form-item {
+  flex: 1 1 200px;
+  margin: 0;
+  min-width: 180px;
+}
+
+.filters-row .form-item label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.filter-actions .btn {
+  padding: 11px 24px;
+  white-space: nowrap;
+  margin: 0;
+}

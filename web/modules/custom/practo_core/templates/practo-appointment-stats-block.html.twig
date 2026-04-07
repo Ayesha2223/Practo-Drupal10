@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * Template for appointment statistics block.
+ */
+#}
+
+<div class="appointment-stats-block">
+  <h3>My Appointments</h3>
+  
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-number">{{ total }}</span>
+      <span class="stat-label">Total</span>
+    </div>
+    
+    <div class="stat-item">
+      <span class="stat-number">{{ upcoming }}</span>
+      <span class="stat-label">Upcoming</span>
+    </div>
+    
+    <div class="stat-item">
+      <span class="stat-number">{{ completed }}</span>
+      <span class="stat-label">Completed</span>
+    </div>
+  </div>
+</div>

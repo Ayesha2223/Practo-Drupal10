@@ -1,0 +1,40 @@
+<div class="doctor-card" data-doctor-id="{{ doctor_id }}">
+  <div class="doctor-card-photo">
+    {% set _n = doctor_name|default('')|trim %}
+    {% set _parts = _n ? _n|split(' ') : [] %}
+    {% set _first = _parts|length > 0 ? (_parts|first) : '' %}
+    {% set _last = _parts|length > 1 ? (_parts|last) : '' %}
+    {% set _initials = ((_first|slice(0, 1)) ~ (_last ? _last|slice(0, 1) : ''))|upper %}
+    <div class="doctor-avatar" aria-label="{{ doctor_name }}">
+      <span class="doctor-avatar__text">{{ _initials ?: 'DR' }}</span>
+    </div>
+  </div>
+  
+  <div class="doctor-card-content">
+    <h3 class="doctor-name">Dr. {{ doctor_name }}</h3>
+    
+    <p class="doctor-specialization">
+      <i class="fas fa-stethoscope"></i>
+      {{ specialization }}
+    </p>
+    
+    <p class="doctor-experience">
+      <i class="fas fa-briefcase"></i>
+      {{ experience }} years experience
+    </p>
+    
+    <p class="doctor-clinic">
+      <i class="fas fa-hospital"></i>
+      {{ clinic }}, {{ city }}
+    </p>
+    
+    <p class="doctor-fee">
+      <strong>Consultation Fee:</strong> ₹{{ fee }}
+    </p>
+    
+    <div class="doctor-card-actions">
+      {{ view_link }}
+      {{ book_link }}
+    </div>
+  </div>
+</div>

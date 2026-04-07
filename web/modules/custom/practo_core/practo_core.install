@@ -1,0 +1,646 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for Practo Core module.
+ */
+
+use Drupal\node\Entity\NodeType;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
+
+/**
+ * Implements hook_install().
+ * 
+ * Creates custom content types, fields, and initial configuration
+ * when the module is installed.
+ */
+function practo_core_install() {
+  // Create Doctor content type
+  _practo_core_create_doctor_content_type();
+  
+  // Create Appointment content type
+  _practo_core_create_appointment_content_type();
+  
+  // Create user type field
+  _practo_core_create_user_type_field();
+  
+  // Set permissions
+  _practo_core_set_permissions();
+
+  // Ensure form display has required widgets.
+  _practo_core_configure_doctor_form_display();
+  
+  // Display success message
+  \Drupal::messenger()->addStatus(t('Practo Core module installed successfully. Doctor and Appointment content types created.'));
+}
+
+
+/**
+ * Creates Doctor content type with all fields.
+ */
+function _practo_core_create_doctor_content_type() {
+  // Create content type
+  $doctor_type = NodeType::create([
+    'type' => 'doctor',
+    'name' => 'Doctor',
+    'description' => 'Doctor profiles with specialization, qualifications, and availability',
+    'display_submitted' => FALSE,
+  ]);
+  $doctor_type->save();
+  
+  // Create fields
+  $fields = [
+    'field_specialization' => [
+      'type' => 'list_string',
+      'label' => 'Specialization',
+      'settings' => [
+        'allowed_values' => [
+          'cardiology' => 'Cardiologist',
+          'dermatology' => 'Dermatologist',
+          'pediatrics' => 'Pediatrician',
+          'orthopedics' => 'Orthopedic Surgeon',
+          'general' => 'General Physician',
+          'gynecology' => 'Gynecologist',
+          'neurology' => 'Neurologist',
+          'psychiatry' => 'Psychiatrist',
+          'dentistry' => 'Dentist',
+          'ophthalmology' => 'Ophthalmologist',
+        ],
+      ],
+      'required' => TRUE,
+    ],
+    'field_qualification' => [
+      'type' => 'string',
+      'label' => 'Qualification',
+      'settings' => ['max_length' => 255],
+      'required' => TRUE,
+    ],
+    'field_experience_years' => [
+      'type' => 'integer',
+      'label' => 'Years of Experience',
+      'settings' => ['min' => 0, 'max' => 60],
+      'required' => TRUE,
+    ],
+    'field_consultation_fee' => [
+      'type' => 'decimal',
+      'label' => 'Consultation Fee (₹)',
+      'settings' => ['precision' => 10, 'scale' => 2],
+      'required' => TRUE,
+    ],
+    'field_profile_photo' => [
+      'type' => 'image',
+      'label' => 'Profile Photo',
+      'storage_settings' => [
+        'uri_scheme' => 'public',
+      ],
+      'settings' => [
+        'file_directory' => 'doctors/photos',
+        'max_filesize' => '2 MB',
+        'file_extensions' => 'png jpg jpeg',
+        'alt_field' => TRUE,
+        'alt_field_required' => FALSE,
+        'title_field' => TRUE,
+        'title_field_required' => FALSE,
+      ],
+      'required' => FALSE,
+    ],
+    'field_clinic_name' => [
+      'type' => 'string',
+      'label' => 'Clinic Name',
+      'settings' => ['max_length' => 255],
+      'required' => TRUE,
+    ],
+    'field_clinic_address' => [
+      'type' => 'string_long',
+      'label' => 'Clinic Address',
+      'required' => TRUE,
+    ],
+    'field_city' => [
+      'type' => 'string',
+      'label' => 'City',
+      'settings' => ['max_length' => 100],
+      'required' => TRUE,
+    ],
+    'field_phone' => [
+      'type' => 'string',
+      'label' => 'Phone Number',
+      'settings' => ['max_length' => 15],
+      'required' => TRUE,
+    ],
+    'field_email' => [
+      'type' => 'email',
+      'label' => 'Email Address',
+      'required' => TRUE,
+    ],
+    'field_available_days' => [
+      'type' => 'list_string',
+      'label' => 'Available Days',
+      'cardinality' => -1,
+      'settings' => [
+        'allowed_values' => [
+          'monday' => 'Monday',
+          'tuesday' => 'Tuesday',
+          'wednesday' => 'Wednesday',
+          'thursday' => 'Thursday',
+          'friday' => 'Friday',
+          'saturday' => 'Saturday',
+          'sunday' => 'Sunday',
+        ],
+      ],
+      'required' => TRUE,
+    ],
+    'field_consultation_hours' => [
+      'type' => 'string',
+      'label' => 'Consultation Hours',
+      'settings' => ['max_length' => 100],
+      'default_value' => '09:00 AM - 05:00 PM',
+      'required' => TRUE,
+    ],
+    'field_about_doctor' => [
+      'type' => 'text_long',
+      'label' => 'About Doctor',
+      'required' => FALSE,
+    ],
+    'field_languages_spoken' => [
+      'type' => 'string',
+      'label' => 'Languages Spoken',
+      'settings' => ['max_length' => 255],
+      'default_value' => 'English, Hindi',
+      'required' => FALSE,
+    ],
+  ];
+  
+  foreach ($fields as $field_name => $field_info) {
+    _practo_core_create_field($field_name, 'node', 'doctor', $field_info);
+  }
+
+  _practo_core_configure_doctor_form_display();
+  
+  \Drupal::messenger()->addStatus(t('Doctor content type created with custom fields.'));
+}
+
+/**
+ * Ensures doctor node form display shows key fields including profile photo.
+ */
+function _practo_core_configure_doctor_form_display() {
+  // Configure default form display for doctor content type.
+  $form_display = EntityFormDisplay::load('node.doctor.default');
+  if (!$form_display) {
+    $form_display = EntityFormDisplay::create([
+      'targetEntityType' => 'node',
+      'bundle' => 'doctor',
+      'mode' => 'default',
+      'status' => TRUE,
+    ]);
+  }
+
+  // Only set widgets for fields that actually exist.
+  $field_definitions = \Drupal::service('entity_field.manager')->getFieldDefinitions('node', 'doctor');
+
+  if (isset($field_definitions['field_profile_photo'])) {
+    $form_display->setComponent('field_profile_photo', [
+      'type' => 'image_image',
+      'weight' => 2,
+      'settings' => [
+        'progress_indicator' => 'throbber',
+        'preview_image_style' => 'thumbnail',
+      ],
+    ]);
+  }
+
+  $form_display->save();
+}
+
+/**
+ * Creates Appointment content type with all fields.
+ */
+function _practo_core_create_appointment_content_type() {
+  // Create content type
+  $appointment_type = NodeType::create([
+    'type' => 'appointment',
+    'name' => 'Appointment',
+    'description' => 'Patient appointment bookings with doctors',
+    'display_submitted' => FALSE,
+  ]);
+  $appointment_type->save();
+  
+  // Create fields
+  $fields = [
+    'field_patient_ref' => [
+      'type' => 'entity_reference',
+      'label' => 'Patient',
+      'settings' => [
+        'target_type' => 'user',
+        'handler' => 'default',
+      ],
+      'required' => TRUE,
+    ],
+    'field_doctor_ref' => [
+      'type' => 'entity_reference',
+      'label' => 'Doctor',
+      'settings' => [
+        'target_type' => 'node',
+        'handler' => 'default:node',
+        'handler_settings' => [
+          'target_bundles' => ['doctor' => 'doctor'],
+        ],
+      ],
+      'required' => TRUE,
+    ],
+    'field_appointment_date' => [
+      'type' => 'datetime',
+      'label' => 'Appointment Date',
+      'settings' => ['datetime_type' => 'date'],
+      'required' => TRUE,
+    ],
+    'field_appointment_time' => [
+      'type' => 'list_string',
+      'label' => 'Appointment Time',
+      'settings' => [
+        'allowed_values' => [
+          '09:00' => '09:00 AM',
+          '09:30' => '09:30 AM',
+          '10:00' => '10:00 AM',
+          '10:30' => '10:30 AM',
+          '11:00' => '11:00 AM',
+          '11:30' => '11:30 AM',
+          '12:00' => '12:00 PM',
+          '14:00' => '02:00 PM',
+          '14:30' => '02:30 PM',
+          '15:00' => '03:00 PM',
+          '15:30' => '03:30 PM',
+          '16:00' => '04:00 PM',
+          '16:30' => '04:30 PM',
+          '17:00' => '05:00 PM',
+        ],
+      ],
+      'required' => TRUE,
+    ],
+    'field_patient_name' => [
+      'type' => 'string',
+      'label' => 'Patient Full Name',
+      'settings' => ['max_length' => 255],
+      'required' => TRUE,
+    ],
+    'field_patient_age' => [
+      'type' => 'integer',
+      'label' => 'Patient Age',
+      'settings' => ['min' => 1, 'max' => 120],
+      'required' => TRUE,
+    ],
+    'field_patient_gender' => [
+      'type' => 'list_string',
+      'label' => 'Gender',
+      'settings' => [
+        'allowed_values' => [
+          'male' => 'Male',
+          'female' => 'Female',
+          'other' => 'Other',
+        ],
+      ],
+      'required' => TRUE,
+    ],
+    'field_contact_number' => [
+      'type' => 'string',
+      'label' => 'Contact Number',
+      'settings' => ['max_length' => 15],
+      'required' => TRUE,
+    ],
+    'field_reason_visit' => [
+      'type' => 'text_long',
+      'label' => 'Reason for Visit',
+      'required' => TRUE,
+    ],
+    'field_appointment_status' => [
+      'type' => 'list_string',
+      'label' => 'Status',
+      'settings' => [
+        'allowed_values' => [
+          'pending' => 'Pending',
+          'confirmed' => 'Confirmed',
+          'completed' => 'Completed',
+          'cancelled' => 'Cancelled',
+        ],
+      ],
+      'default_value' => 'pending',
+      'required' => TRUE,
+    ],
+    'field_booking_id' => [
+      'type' => 'string',
+      'label' => 'Booking ID',
+      'settings' => ['max_length' => 50],
+      'required' => FALSE,
+    ],
+  ];
+  
+  foreach ($fields as $field_name => $field_info) {
+    _practo_core_create_field($field_name, 'node', 'appointment', $field_info);
+  }
+  
+  \Drupal::messenger()->addStatus(t('Appointment content type created with custom fields.'));
+}
+
+/**
+ * Creates user type field for user entity.
+ */
+function _practo_core_create_user_type_field() {
+  $field_storage = FieldStorageConfig::loadByName('user', 'field_user_type');
+  
+  if (!$field_storage) {
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'field_user_type',
+      'entity_type' => 'user',
+      'type' => 'list_string',
+      'cardinality' => 1,
+      'settings' => [
+        'allowed_values' => [
+          'patient' => 'Patient',
+          'doctor' => 'Doctor',
+          'admin' => 'Admin',
+        ],
+      ],
+    ]);
+    $field_storage->save();
+  }
+  
+  $field = FieldConfig::loadByName('user', 'user', 'field_user_type');
+  
+  if (!$field) {
+    $field = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => 'user',
+      'label' => 'User Type',
+      'required' => TRUE,
+      'default_value' => [['value' => 'patient']],
+    ]);
+    $field->save();
+  }
+
+  // Create additional user fields for registration
+  _practo_core_create_user_additional_fields();
+}
+
+/**
+ * Creates additional user fields needed for registration.
+ */
+function _practo_core_create_user_additional_fields() {
+  $fields = [
+    'field_phone_number' => [
+      'type' => 'string',
+      'label' => 'Phone Number',
+      'settings' => ['max_length' => 20],
+      'required' => FALSE,
+    ],
+    'field_age' => [
+      'type' => 'integer',
+      'label' => 'Age',
+      'settings' => ['min' => 1, 'max' => 120],
+      'required' => FALSE,
+    ],
+    'field_gender' => [
+      'type' => 'list_string',
+      'label' => 'Gender',
+      'settings' => [
+        'allowed_values' => [
+          'male' => 'Male',
+          'female' => 'Female',
+          'other' => 'Other',
+        ],
+      ],
+      'required' => FALSE,
+    ],
+    'field_qualification' => [
+      'type' => 'string',
+      'label' => 'Medical Qualification',
+      'settings' => ['max_length' => 255],
+      'required' => FALSE,
+    ],
+    'field_specialization' => [
+      'type' => 'list_string',
+      'label' => 'Specialization',
+      'settings' => [
+        'allowed_values' => [
+          'cardiology' => 'Cardiologist',
+          'dermatology' => 'Dermatologist',
+          'pediatrics' => 'Pediatrician',
+          'orthopedics' => 'Orthopedic Surgeon',
+          'general' => 'General Physician',
+          'gynecology' => 'Gynecologist',
+          'neurology' => 'Neurologist',
+          'psychiatry' => 'Psychiatrist',
+          'dentistry' => 'Dentist',
+          'ophthalmology' => 'Ophthalmologist',
+        ],
+      ],
+      'required' => FALSE,
+    ],
+    'field_experience_years' => [
+      'type' => 'integer',
+      'label' => 'Years of Experience',
+      'settings' => ['min' => 0, 'max' => 60],
+      'required' => FALSE,
+    ],
+    'field_clinic_name' => [
+      'type' => 'string',
+      'label' => 'Clinic Name',
+      'settings' => ['max_length' => 255],
+      'required' => FALSE,
+    ],
+    'field_address' => [
+      'type' => 'string_long',
+      'label' => 'Address',
+      'required' => FALSE,
+    ],
+    'field_pincode' => [
+      'type' => 'string',
+      'label' => 'Pincode',
+      'settings' => ['max_length' => 6],
+      'required' => FALSE,
+    ],
+    'field_blood_group' => [
+      'type' => 'list_string',
+      'label' => 'Blood Group',
+      'settings' => [
+        'allowed_values' => [
+          'a+' => 'A+',
+          'a-' => 'A-',
+          'b+' => 'B+',
+          'b-' => 'B-',
+          'o+' => 'O+',
+          'o-' => 'O-',
+          'ab+' => 'AB+',
+          'ab-' => 'AB-',
+        ],
+      ],
+      'required' => FALSE,
+    ],
+    'field_allergies' => [
+      'type' => 'text_long',
+      'label' => 'Known Allergies',
+      'required' => FALSE,
+    ],
+    'field_chronic_conditions' => [
+      'type' => 'text_long',
+      'label' => 'Chronic Conditions',
+      'required' => FALSE,
+    ],
+    'field_registration_number' => [
+      'type' => 'string',
+      'label' => 'Medical Council Registration Number',
+      'settings' => ['max_length' => 50],
+      'required' => FALSE,
+    ],
+  ];
+
+  foreach ($fields as $field_name => $field_info) {
+    _practo_core_create_field($field_name, 'user', 'user', $field_info);
+  }
+}
+
+/**
+ * Helper function to create fields.
+ */
+function _practo_core_create_field($field_name, $entity_type, $bundle, $field_info) {
+  // Check if field storage exists
+  $field_storage = FieldStorageConfig::loadByName($entity_type, $field_name);
+  
+  if (!$field_storage) {
+    $storage_settings = $field_info['storage_settings'] ?? [];
+    if (($field_info['type'] ?? '') === 'image') {
+      $storage_settings += ['uri_scheme' => 'public'];
+    }
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => $entity_type,
+      'type' => $field_info['type'],
+      'cardinality' => isset($field_info['cardinality']) ? $field_info['cardinality'] : 1,
+      'settings' => $storage_settings,
+    ]);
+    $field_storage->save();
+  }
+  
+  // Check if field instance exists
+  $field = FieldConfig::loadByName($entity_type, $bundle, $field_name);
+  
+  if (!$field) {
+    $instance_settings = $field_info['settings'] ?? [];
+    $field = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => $bundle,
+      'label' => $field_info['label'],
+      'required' => isset($field_info['required']) ? $field_info['required'] : FALSE,
+      'default_value' => isset($field_info['default_value']) ? [['value' => $field_info['default_value']]] : NULL,
+      'settings' => $instance_settings,
+    ]);
+    $field->save();
+  }
+}
+
+/**
+ * Sets default permissions.
+ */
+function _practo_core_set_permissions() {
+  // Create custom roles
+  _practo_core_create_user_roles();
+  
+  $roles = ['authenticated', 'patient', 'doctor', 'admin'];
+  
+  foreach ($roles as $role_name) {
+    $role = \Drupal\user\Entity\Role::load($role_name);
+    
+    if ($role) {
+      // Base permissions for all authenticated users
+      $role->grantPermission('view doctor content');
+      
+      // Patient-specific permissions
+      if ($role_name === 'patient' || $role_name === 'authenticated') {
+        $role->grantPermission('create appointment content');
+        $role->grantPermission('edit own appointment content');
+        $role->grantPermission('delete own appointment content');
+        $role->grantPermission('view own appointment content');
+      }
+      
+      // Doctor-specific permissions
+      if ($role_name === 'doctor' || $role_name === 'admin') {
+        $role->grantPermission('view own doctor content');
+        $role->grantPermission('edit own doctor content');
+        $role->grantPermission('view appointment content');
+        $role->grantPermission('edit appointment content');
+      }
+      
+      // Admin-specific permissions
+      if ($role_name === 'admin') {
+        $role->grantPermission('administer nodes');
+        $role->grantPermission('create doctor content');
+        $role->grantPermission('edit any doctor content');
+        $role->grantPermission('delete any doctor content');
+        $role->grantPermission('administer users');
+        $role->grantPermission('access user profiles');
+      }
+      
+      $role->save();
+    }
+  }
+}
+
+/**
+ * Creates custom user roles.
+ */
+function _practo_core_create_user_roles() {
+  // Create patient role
+  $patient_role = \Drupal\user\Entity\Role::load('patient');
+  if (!$patient_role) {
+    $patient_role = \Drupal\user\Entity\Role::create(['id' => 'patient', 'label' => 'Patient']);
+    $patient_role->save();
+  }
+  
+  // Create doctor role
+  $doctor_role = \Drupal\user\Entity\Role::load('doctor');
+  if (!$doctor_role) {
+    $doctor_role = \Drupal\user\Entity\Role::create(['id' => 'doctor', 'label' => 'Doctor']);
+    $doctor_role->save();
+  }
+  
+  // Create admin role
+  $admin_role = \Drupal\user\Entity\Role::load('admin');
+  if (!$admin_role) {
+    $admin_role = \Drupal\user\Entity\Role::create(['id' => 'admin', 'label' => 'Admin']);
+    $admin_role->save();
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ * 
+ * Cleans up when module is uninstalled.
+ */
+function practo_core_uninstall() {
+  // Delete content types and their content
+  $content_types = ['doctor', 'appointment'];
+  
+  foreach ($content_types as $type) {
+    // Delete all nodes of this type
+    $nids = \Drupal::entityQuery('node')
+      ->condition('type', $type)
+      ->accessCheck(FALSE)
+      ->execute();
+    
+    if (!empty($nids)) {
+      $nodes = \Drupal\node\Entity\Node::loadMultiple($nids);
+      foreach ($nodes as $node) {
+        $node->delete();
+      }
+    }
+    
+    // Delete the content type
+    $content_type = NodeType::load($type);
+    if ($content_type) {
+      $content_type->delete();
+    }
+  }
+  
+  \Drupal::messenger()->addStatus(t('Practo Core module uninstalled. All data removed.'));
+}

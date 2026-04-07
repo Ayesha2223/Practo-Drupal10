@@ -1,0 +1,38 @@
+name: 'Practo Telephasic'
+type: theme
+description: 'Professional Telephasic-inspired theme for Practo healthcare platform'
+core_version_requirement: ^10
+package: Custom
+
+base theme: false
+
+regions:
+  header: 'Header'
+  primary_menu: 'Primary menu'
+  secondary_menu: 'Secondary menu'
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'
+  hero: 'Hero Banner'
+  highlighted: 'Highlighted'
+  breadcrumb: 'Breadcrumb'
+  content: 'Content'
+  sidebar_first: 'Left sidebar'
+  sidebar_second: 'Right sidebar'
+  footer_first: 'Footer first'
+  footer_second: 'Footer second'
+  footer_third: 'Footer third'
+  footer_bottom: 'Footer bottom'
+
+libraries:
+  - practo_telephasic/global-styling
+
+libraries-override:
+  system/base:
+    css:
+      component:
+        css/components/ajax-progress.module.css: css/components/ajax-progress.module.css
+        css/components/autocomplete-loading.module.css: css/components/autocomplete-loading.module.css
+
+libraries-extend:
+  user/drupal.user:
+    - practo_telephasic/user-pages

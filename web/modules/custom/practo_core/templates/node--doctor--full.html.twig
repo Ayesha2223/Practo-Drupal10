@@ -1,0 +1,132 @@
+{#
+/**
+ * @file
+ * Theme override for doctor nodes in full view mode.
+ *
+ * Available variables:
+ * - node: The node entity with access to all fields
+ * - content: All node content that has been rendered
+ * - label: The title of the node
+ * - url: Direct URL of the current node
+ */
+#}
+
+<article{{ attributes.addClass('node', 'node--type-' ~ node.bundle|clean_class, 'node--view-mode-' ~ view_mode|clean_class) }}>
+  
+  <div class="doctor-full-view">
+    
+    <div class="doctor-header">
+      {% set _n = node.label|default('')|trim %}
+      {% set _parts = _n ? _n|split(' ') : [] %}
+      {% set _first = _parts|length > 0 ? (_parts|first) : '' %}
+      {% set _last = _parts|length > 1 ? (_parts|last) : '' %}
+      {% set _initials = ((_first|slice(0, 1)) ~ (_last ? _last|slice(0, 1) : ''))|upper %}
+      <div class="doctor-profile-photo">
+        <div class="doctor-avatar doctor-avatar--lg" aria-label="Dr. {{ node.label }}">
+          <span class="doctor-avatar__text">{{ _initials ?: 'DR' }}</span>
+        </div>
+      </div>
+      
+      <div class="doctor-main-info">
+        <h1>Dr. {{ label }}</h1>
+        
+        {% if content.field_specialization %}
+          <p class="doctor-specialization">
+            <strong>Specialization:</strong> {{ content.field_specialization }}
+          </p>
+        {% endif %}
+        
+        {% if content.field_qualification %}
+          <p class="doctor-qualification">
+            <strong>Qualification:</strong> {{ content.field_qualification }}
+          </p>
+        {% endif %}
+        
+        {% if content.field_experience_years %}
+          <p class="doctor-experience">
+            <strong>Experience:</strong> {{ content.field_experience_years }} Years
+          </p>
+        {% endif %}
+        
+        {% if content.field_consultation_fee %}
+          <p class="doctor-fee">
+            <strong>Consultation Fee:</strong> {{ content.field_consultation_fee }}
+          </p>
+        {% endif %}
+        
+        <div class="doctor-actions">
+          <a href="{{ practo_safe_internal('/book-appointment/' ~ node.id) }}" class="btn btn-primary btn-lg">
+            Book Appointment
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="doctor-details">
+      
+      {% if content.field_about_doctor %}
+        <div class="doctor-section">
+          <h2>About Doctor</h2>
+          <div class="section-content">
+            {{ content.field_about_doctor }}
+          </div>
+        </div>
+      {% endif %}
+      
+      <div class="doctor-section">
+        <h2>Clinic Information</h2>
+        <div class="section-content">
+          {% if content.field_clinic_name %}
+            <p><strong>Clinic Name:</strong> {{ content.field_clinic_name }}</p>
+          {% endif %}
+          
+          {% if content.field_clinic_address %}
+            <p><strong>Address:</strong> {{ content.field_clinic_address }}</p>
+          {% endif %}
+          
+          {% if content.field_city %}
+            <p><strong>City:</strong> {{ content.field_city }}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="doctor-section">
+        <h2>Contact Information</h2>
+        <div class="section-content">
+          {% if content.field_phone %}
+            <p><strong>Phone:</strong> {{ content.field_phone }}</p>
+          {% endif %}
+          
+          {% if content.field_email %}
+            <p><strong>Email:</strong> {{ content.field_email }}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="doctor-section">
+        <h2>Availability</h2>
+        <div class="section-content">
+          {% if content.field_available_days %}
+            <p><strong>Available Days:</strong> {{ content.field_available_days }}</p>
+          {% endif %}
+          
+          {% if content.field_consultation_hours %}
+            <p><strong>Consultation Hours:</strong> {{ content.field_consultation_hours }}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      {% if content.field_languages_spoken %}
+        <div class="doctor-section">
+          <h2>Languages Spoken</h2>
+          <div class="section-content">
+            {{ content.field_languages_spoken }}
+          </div>
+        </div>
+      {% endif %}
+      
+    </div>
+    
+  </div>
+  
+</article>

@@ -1,0 +1,905 @@
+<?php
+
+/**
+ * @file
+ * Main module file for Practo Core.
+ * Contains hooks and helper functions.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\Node;
+use Drupal\user\Entity\User;
+use Drupal\file\Entity\File;
+
+/**
+ * Implements hook_help().
+ * 
+ * Provides help text for the module.
+ */
+function practo_core_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.practo_core':
+      return '<p>' . t('Practo Core module provides healthcare appointment booking functionality.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function practo_core_permission() {
+  return [
+    'view doctor content' => [
+      'title' => t('View doctor content'),
+      'description' => t('Allow users to view doctor profiles and listings.'),
+    ],
+    'view own doctor content' => [
+      'title' => t('View own doctor content'),
+      'description' => t('Allow doctors to view their own profile.'),
+    ],
+    'edit own doctor content' => [
+      'title' => t('Edit own doctor content'),
+      'description' => t('Allow doctors to edit their own profile.'),
+    ],
+    'create appointment content' => [
+      'title' => t('Create appointment content'),
+      'description' => t('Allow users to create appointment bookings.'),
+    ],
+    'edit own appointment content' => [
+      'title' => t('Edit own appointment content'),
+      'description' => t('Allow users to edit their own appointments.'),
+    ],
+    'delete own appointment content' => [
+      'title' => t('Delete own appointment content'),
+      'description' => t('Allow users to delete their own appointments.'),
+    ],
+    'view own appointment content' => [
+      'title' => t('View own appointment content'),
+      'description' => t('Allow users to view their own appointments.'),
+    ],
+    'view appointment content' => [
+      'title' => t('View appointment content'),
+      'description' => t('Allow viewing all appointment content.'),
+    ],
+    'edit appointment content' => [
+      'title' => t('Edit appointment content'),
+      'description' => t('Allow editing all appointment content.'),
+    ],
+    'create doctor content' => [
+      'title' => t('Create doctor content'),
+      'description' => t('Allow creating doctor profiles.'),
+    ],
+    'edit any doctor content' => [
+      'title' => t('Edit any doctor content'),
+      'description' => t('Allow editing any doctor profile.'),
+    ],
+    'delete any doctor content' => [
+      'title' => t('Delete any doctor content'),
+      'description' => t('Allow deleting any doctor profile.'),
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme().
+ */
+function practo_core_theme($existing, $type, $theme, $path) {
+  return [
+    // Node templates for Doctor
+    'node__doctor__full' => [
+      'template' => 'node--doctor--full',
+      'base hook' => 'node',
+    ],
+    'node__doctor__teaser' => [
+      'template' => 'node--doctor--teaser',
+      'base hook' => 'node',
+    ],
+    // Node templates for Appointment
+    'node__appointment__full' => [
+      'template' => 'node--appointment--full',
+      'base hook' => 'node',
+    ],
+    // Custom page templates
+    'practo_doctor_card' => [
+      'variables' => [
+        'doctor_id' => NULL,
+        'doctor_name' => NULL,
+        'specialization' => NULL,
+        'experience' => NULL,
+        'fee' => NULL,
+        'clinic' => NULL,
+        'city' => NULL,
+        'photo_url' => NULL,
+        'view_link' => NULL,
+        'book_link' => NULL,
+      ],
+      'template' => 'practo-doctor-card',
+    ],
+    'practo_doctor_listing' => [
+      'variables' => [
+        'filter_form' => NULL,
+        'doctors' => [],
+        'total_count' => 0,
+      ],
+      'template' => 'practo-doctor-listing',
+    ],
+    'practo_doctor_profile' => [
+      'variables' => [
+        'data' => [],
+      ],
+      'template' => 'practo-doctor-profile',
+    ],
+    'practo_my_appointments' => [
+      'variables' => [
+        'upcoming' => [],
+        'past' => [],
+      ],
+      'template' => 'practo-my-appointments',
+    ],
+    'practo_doctor_search_block' => [
+      'variables' => [
+        'specializations' => [],
+        'cities' => [],
+      ],
+      'template' => 'practo-doctor-search-block',
+    ],
+    'practo_featured_doctors_block' => [
+      'variables' => [
+        'doctors' => [],
+      ],
+      'template' => 'practo-featured-doctors-block',
+    ],
+    'practo_appointment_stats_block' => [
+      'variables' => [
+        'total' => 0,
+        'upcoming' => 0,
+        'completed' => 0,
+      ],
+      'template' => 'practo-appointment-stats-block',
+    ],
+    'practo_homepage_full' => [
+      'variables' => [
+      'cities' => [],
+      'specializations' => [],
+      'featured_doctors' => [],
+      'statistics' => [],
+      'health_packages' => [],
+      'health_articles' => [],
+    ],
+    'template' => 'practo-homepage-full',
+    ],
+
+    // Health checkups page
+'health_checkups_page' => [
+  'variables' => [
+    'packages' => [],
+  ],
+  'template' => 'health-checkups-page',
+],
+// Consult online page
+'consult_online_page' => [
+  'variables' => [
+    'doctors' => [],
+  ],
+  'template' => 'consult-online-page',
+],
+// Find hospitals page
+'find_hospitals_page' => [
+  'variables' => [
+    'hospitals' => [],
+  ],
+  'template' => 'find-hospitals-page',
+],
+// Medicines page
+'medicines_page' => [
+  'variables' => [
+    'categories' => [],
+  ],
+  'template' => 'medicines-page',
+],
+// Lab tests page
+'lab_tests_page' => [
+  'variables' => [
+    'tests' => [],
+  ],
+  'template' => 'lab-tests-page',
+],
+// Health articles page
+'health_articles_page' => [
+  'variables' => [
+    'articles' => [],
+  ],
+  'template' => 'health-articles-page',
+],
+// Book package page
+'book_package_page' => [
+  'variables' => [
+    'package_id' => NULL,
+    'package' => [],
+  ],
+  'template' => 'book-package-page',
+],
+// View article page
+'view_article_page' => [
+      'variables' => [
+        'article' => [],
+        'article_id' => NULL,
+      ],
+      'template' => 'view-article-page',
+    ],
+
+    'auth_login_page' => [
+      'variables' => [
+        'patient_login_url' => NULL,
+        'doctor_login_url' => NULL,
+      ],
+      'template' => 'auth-login-page',
+    ],
+
+    'practo_search_results' => [
+      'variables' => [
+        'doctors' => [],
+        'count' => 0,
+        'search_term' => NULL,
+      ],
+      'template' => 'practo-search-results',
+    ],
+
+    'user_dashboard' => [
+      'variables' => [
+        'user_name' => NULL,
+      ],
+      'template' => 'user-dashboard',
+    ],
+
+    'user_profile_edit' => [
+      'variables' => [
+        'user' => NULL,
+      ],
+      'template' => 'user-profile-edit',
+    ],
+
+    // Admin Dashboard
+    'admin_dashboard' => [
+      'variables' => [
+        'stats' => [],
+    ],
+    'template' => 'admin-dashboard',
+    ],
+    'manage_doctors' => [
+      'variables' => [
+        'doctors' => [],
+      ],
+    'template' => 'manage-doctors',
+    ],
+    'manage_appointments' => [
+      'variables' => [
+        'appointments' => [],
+    ],
+    'template' => 'manage-appointments',
+    ],
+    'manage_packages' => [
+      'variables' => [
+        'packages' => [],
+    ],
+    'template' => 'manage-packages',
+    ],
+    'manage_articles' => [
+      'variables' => [
+        'articles' => [],
+    ],
+    'template' => 'manage-articles',
+    ],
+    'practo_health_articles' => [
+      'variables' => [
+        'articles' => [],
+      ],
+    ],
+    'user_type_selection_radios' => [
+      'render element' => 'element',
+    ],
+    'doctor_dashboard' => [
+      'variables' => [
+        'doctor_name' => NULL,
+        'doctor_id' => NULL,
+        'doctor_profile_url' => NULL,
+        'doctor_photo_url' => NULL,
+        'doctor_published' => NULL,
+        'doctor_meta' => [],
+        'active_filter' => 'active',
+        'appointments' => [],
+        'total_appointments' => 0,
+      ],
+      'template' => 'doctor-dashboard',
+    ],
+    'doctor_appointments' => [
+      'variables' => [
+        'doctor_profile' => NULL,
+        'appointments' => [],
+      ],
+    ],
+    'patient_dashboard' => [
+      'variables' => [
+        'user' => NULL,
+        'upcoming_appointments' => [],
+        'past_appointments' => [],
+        'stats' => [],
+      ],
+    ],
+    'patient_appointments' => [
+      'variables' => [
+        'user' => NULL,
+        'appointments' => [],
+      ],
+    ],
+    'patient_medical_records' => [
+      'variables' => [
+        'user' => NULL,
+        'appointments' => [],
+      ],
+    ],
+    'practo_doctor_verification_dashboard' => [
+      'variables' => [
+        'pending_doctors' => [],
+        'all_doctors' => [],
+      ],
+    ],
+    'practo_doctor_verification_details' => [
+      'variables' => [
+        'doctor' => NULL,
+        'user' => NULL,
+        'verification_status' => [],
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_form_alter().
+ * 
+ * Modifies forms - adds validation and changes behavior.
+ */
+function practo_core_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  
+  // Modify user registration form to include user type
+  if ($form_id == 'user_register_form') {
+    $form['field_user_type']['widget']['#required'] = TRUE;
+    $form['field_user_type']['widget']['#description'] = t('Select your role in the system. This determines your access level and available features.');
+    
+    // Add custom validation for user registration
+    $form['#validate'][] = 'practo_core_user_register_validate';
+  }
+  
+  // Modify user profile form
+  if ($form_id == 'user_form') {
+    // Only allow admin to change user type
+    $current_user = \Drupal::currentUser();
+    if (!in_array('admin', $current_user->getRoles()) && !in_array('administrator', $current_user->getRoles())) {
+      $form['field_user_type']['#access'] = FALSE;
+    }
+    
+    // Add custom submit handler for role synchronization
+    $form['actions']['submit']['#submit'][] = 'practo_core_user_form_submit';
+  }
+  
+  // Modify appointment form
+  if ($form_id == 'node_appointment_form' || $form_id == 'node_appointment_edit_form') {
+    
+    // Check user type permissions
+    $current_user = \Drupal::currentUser();
+    $user_entity = User::load($current_user->id());
+    $user_type = ($user_entity && $user_entity->hasField('field_user_type') && !$user_entity->get('field_user_type')->isEmpty()) ? $user_entity->get('field_user_type')->value : 'patient';
+    $is_admin_user = in_array('administrator', $current_user->getRoles()) || in_array('admin', $current_user->getRoles()) || $user_type === 'admin';
+    
+    // Only patients can create appointments
+    if ($form_id == 'node_appointment_form' && $user_type !== 'patient' && !$is_admin_user) {
+      $form['#access'] = FALSE;
+      \Drupal::messenger()->addError(t('Only patients can book appointments.'));
+      return;
+    }
+    
+    // Auto-fill patient reference with current user (patients only)
+    if (!$is_admin_user) {
+      $form['field_patient_ref']['widget'][0]['target_id']['#default_value'] = User::load($current_user->id());
+      $form['field_patient_ref']['#access'] = FALSE; // Hide from form
+    }
+    
+    // Generate unique booking ID
+    if ($form_id == 'node_appointment_form') {
+      $booking_id = 'BK' . strtoupper(uniqid());
+      $form['field_booking_id']['widget'][0]['value']['#default_value'] = $booking_id;
+      $form['field_booking_id']['#access'] = FALSE; // Hide from form
+    }
+    
+    // Add custom validation
+    $form['#validate'][] = 'practo_core_appointment_form_validate';
+    
+    // Add custom submit handler
+    array_unshift($form['actions']['submit']['#submit'], 'practo_core_appointment_form_submit');
+    
+    // Modify form display based on user type
+    if ($user_type === 'patient' && !$is_admin_user) {
+      $form['field_appointment_status']['#access'] = FALSE; // Hide status from patients
+    }
+    
+    // Add help text
+    $form['field_appointment_date']['widget'][0]['#description'] = t('Select a date for your appointment (minimum 1 day in advance).');
+    $form['field_appointment_time']['widget']['#description'] = t('Choose your preferred time slot.');
+  }
+  
+  // Modify doctor form
+  if ($form_id == 'node_doctor_form' || $form_id == 'node_doctor_edit_form') {
+    $current_user = \Drupal::currentUser();
+    $user_entity = User::load($current_user->id());
+    $user_type = ($user_entity && $user_entity->hasField('field_user_type') && !$user_entity->get('field_user_type')->isEmpty()) ? $user_entity->get('field_user_type')->value : 'patient';
+    
+    // Only admins and doctors can create/edit doctors, but with restrictions
+    if (!in_array('administrator', $current_user->getRoles()) && 
+        !in_array('admin', $current_user->getRoles()) && 
+        $user_type !== 'doctor') {
+      $form['#access'] = FALSE;
+      \Drupal::messenger()->addError(t('You do not have permission to create or edit doctor profiles.'));
+      return;
+    }
+    
+    // Doctors can only edit their own profiles
+    if ($user_type === 'doctor' && $form_id == 'node_doctor_edit_form') {
+      $doctor_node = $form_state->getFormObject()->getEntity();
+      if (!_practo_core_is_doctor_owner($current_user->id(), $doctor_node->id())) {
+        $form['#access'] = FALSE;
+        \Drupal::messenger()->addError(t('You can only edit your own doctor profile.'));
+        return;
+      }
+    }
+  }
+}
+
+/**
+ * Custom validation for user registration form.
+ */
+function practo_core_user_register_validate($form, FormStateInterface $form_state) {
+  $user_type = $form_state->getValue('field_user_type')[0]['value'];
+  $email = $form_state->getValue('mail');
+  
+  // Additional validation based on user type
+  if ($user_type === 'doctor') {
+    // Doctors should have professional email addresses
+    if (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+      $form_state->setErrorByName('mail', t('Doctors must provide a valid professional email address.'));
+    }
+  }
+}
+
+/**
+ * Custom submit handler for user form.
+ */
+function practo_core_user_form_submit($form, FormStateInterface $form_state) {
+  $user = $form_state->getFormObject()->getEntity();
+  $user_type = ($user->hasField('field_user_type') && !$user->get('field_user_type')->isEmpty()) ? $user->get('field_user_type')->value : '';
+  
+  // Synchronize Drupal roles with user type field
+  _practo_core_sync_user_roles($user, $user_type);
+}
+
+/**
+ * Synchronizes user roles based on user type field.
+ */
+function _practo_core_sync_user_roles($user, $user_type) {
+  // Remove existing custom roles
+  $custom_roles = ['patient', 'doctor', 'admin'];
+  foreach ($custom_roles as $role) {
+    if ($user->hasRole($role)) {
+      $user->removeRole($role);
+    }
+  }
+  
+  // Add new role based on user type
+  if ($user_type && in_array($user_type, $custom_roles, TRUE)) {
+    $user->addRole($user_type);
+  }
+}
+
+/**
+ * Checks if user is the owner of a doctor profile.
+ */
+function _practo_core_is_doctor_owner($user_id, $doctor_nid) {
+  // Find doctor profile linked to this user
+  $query = \Drupal::entityQuery('node')
+    ->condition('type', 'doctor')
+    ->condition('uid', $user_id)
+    ->condition('nid', $doctor_nid)
+    ->accessCheck(FALSE);
+  
+  $result = $query->execute();
+  return !empty($result);
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert() for user.
+ */
+function practo_core_entity_presave(\Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity instanceof \Drupal\user\UserInterface) {
+    $user_type = ($entity->hasField('field_user_type') && !$entity->get('field_user_type')->isEmpty()) ? $entity->get('field_user_type')->value : '';
+    if ($user_type) {
+      _practo_core_sync_user_roles($entity, $user_type);
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function practo_core_entity_insert(\Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity instanceof \Drupal\node\NodeInterface && $entity->bundle() === 'doctor') {
+    _practo_core_persist_doctor_profile_photo($entity);
+  }
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function practo_core_entity_update(\Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity instanceof \Drupal\node\NodeInterface && $entity->bundle() === 'doctor') {
+    _practo_core_persist_doctor_profile_photo($entity);
+  }
+}
+
+/**
+ * Makes doctor profile photo permanent and tracks file usage.
+ */
+function _practo_core_persist_doctor_profile_photo(\Drupal\node\NodeInterface $doctor) {
+  if (!$doctor->hasField('field_profile_photo') || $doctor->get('field_profile_photo')->isEmpty()) {
+    return;
+  }
+
+  $file_entity = $doctor->get('field_profile_photo')->entity;
+  if (!$file_entity instanceof File) {
+    return;
+  }
+
+  if (!$file_entity->isPermanent()) {
+    $file_entity->setPermanent();
+    $file_entity->save();
+  }
+
+  \Drupal::service('file.usage')->add($file_entity, 'practo_core', 'node', $doctor->id());
+}
+
+/**
+ * Custom validation for appointment form.
+ * 
+ * Validates:
+ * - Appointment date is in future
+ * - Selected time slot is available
+ * - Phone number format
+ */
+function practo_core_appointment_form_validate($form, FormStateInterface $form_state) {
+  
+  // Get form values
+  $doctor_id = $form_state->getValue('field_doctor_ref')[0]['target_id'];
+  $date = $form_state->getValue('field_appointment_date')[0]['value'];
+  $time = $form_state->getValue('field_appointment_time')[0]['value'];
+  $phone = $form_state->getValue('field_contact_number')[0]['value'];
+  
+  // Validate date is in future
+  $selected_date = new DateTime($date);
+  $today = new DateTime();
+  $today->setTime(0, 0, 0);
+  
+  if ($selected_date < $today) {
+    $form_state->setErrorByName('field_appointment_date', 
+      t('Appointment date must be in the future.'));
+  }
+  
+  // Validate phone number (10 digits)
+  if (!preg_match('/^[0-9]{10}$/', $phone)) {
+    $form_state->setErrorByName('field_contact_number', 
+      t('Please enter a valid 10-digit phone number.'));
+  }
+  
+  // Check if time slot is already booked
+  $query = \Drupal::entityQuery('node')
+    ->condition('type', 'appointment')
+    ->condition('field_doctor_ref', $doctor_id)
+    ->condition('field_appointment_date', $date)
+    ->condition('field_appointment_time', $time)
+    ->condition('field_appointment_status', 'cancelled', '!=')
+    ->accessCheck(FALSE);
+  
+  // Exclude current appointment if editing
+  $current_entity = $form_state->getFormObject()->getEntity();
+  if (!$current_entity->isNew()) {
+    $query->condition('nid', $current_entity->id(), '!=');
+  }
+  
+  $existing_appointments = $query->execute();
+  
+  if (!empty($existing_appointments)) {
+    $form_state->setErrorByName('field_appointment_time', 
+      t('Sorry, this time slot is already booked. Please select another time.'));
+  }
+  
+  // Validate that selected day matches doctor's available days
+  $doctor = Node::load($doctor_id);
+  if ($doctor) {
+    $available_days = [];
+    foreach ($doctor->get('field_available_days')->getValue() as $day) {
+      $available_days[] = $day['value'];
+    }
+    
+    $day_of_week = strtolower($selected_date->format('l'));
+    if (!in_array($day_of_week, $available_days)) {
+      $form_state->setErrorByName('field_appointment_date', 
+        t('Doctor is not available on @day. Please select another date.', 
+        ['@day' => ucfirst($day_of_week)]));
+    }
+  }
+}
+
+/**
+ * Custom submit handler for appointment form.
+ * 
+ * Sets status to pending and logs the booking.
+ */
+function practo_core_appointment_form_submit($form, FormStateInterface $form_state) {
+  // Set status to pending for new appointments
+  $form_state->setValue('field_appointment_status', [['value' => 'pending']]);
+  
+  // Log the appointment creation
+  \Drupal::logger('practo_core')->notice('New appointment booking initiated');
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_access() for node.
+ */
+function practo_core_node_access(\Drupal\node\NodeInterface $node, $operation, \Drupal\Core\Session\AccountInterface $account) {
+  $node_type = $node->bundle();
+  $user = User::load($account->id());
+  $user_type = $user ? $user->get('field_user_type')->value : 'patient';
+  $is_admin_user = in_array('administrator', $account->getRoles()) || in_array('admin', $account->getRoles()) || $user_type === 'admin';
+  
+  // Doctor content access control
+  if ($node_type === 'doctor') {
+    switch ($operation) {
+      case 'view':
+        // Published doctor profiles are public.
+        if ($node->isPublished()) {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+
+        // Unpublished profiles: only owner and admins can view.
+        if (in_array('administrator', $account->getRoles()) ||
+            in_array('admin', $account->getRoles()) ||
+            $user_type === 'admin' ||
+            ($account->isAuthenticated() && $node->getOwnerId() === $account->id())) {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+
+        return \Drupal\Core\Access\AccessResult::forbidden('Doctor profile is pending verification.');
+        
+      case 'create':
+        // Only admins and doctors can create doctor profiles
+        if (in_array('administrator', $account->getRoles()) || 
+            in_array('admin', $account->getRoles()) || 
+            $user_type === 'admin' || 
+            $user_type === 'doctor') {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        return \Drupal\Core\Access\AccessResult::forbidden('Only admins and doctors can create doctor profiles.');
+        
+      case 'update':
+        // Admins can edit any doctor profile
+        if (in_array('administrator', $account->getRoles()) || 
+            in_array('admin', $account->getRoles()) || 
+            $user_type === 'admin') {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        // Doctors can only edit their own profiles
+        if ($user_type === 'doctor' && $node->getOwnerId() === $account->id()) {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        return \Drupal\Core\Access\AccessResult::forbidden('You can only edit your own doctor profile.');
+        
+      case 'delete':
+        // Only admins can delete doctor profiles
+        if (in_array('administrator', $account->getRoles()) || 
+            in_array('admin', $account->getRoles()) || 
+            $user_type === 'admin') {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        return \Drupal\Core\Access\AccessResult::forbidden('Only admins can delete doctor profiles.');
+    }
+  }
+  
+  // Appointment content access control
+  if ($node_type === 'appointment') {
+    switch ($operation) {
+      case 'view':
+        // Patients can view their own appointments
+        if ($user_type === 'patient' && $node->get('field_patient_ref')->target_id === $account->id()) {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        // Doctors can view appointments with them
+        if ($user_type === 'doctor') {
+          $doctor_id = $node->get('field_doctor_ref')->target_id;
+          $doctor_node = Node::load($doctor_id);
+          if ($doctor_node && $doctor_node->getOwnerId() === $account->id()) {
+            return \Drupal\Core\Access\AccessResult::allowed();
+          }
+
+          // Fallback: ownership via email match (useful if doctor-node ownership is out of sync).
+          if ($doctor_node && $user) {
+            $doctor_email = ($doctor_node->hasField('field_email') && !$doctor_node->get('field_email')->isEmpty()) ? $doctor_node->get('field_email')->value : '';
+            if ($doctor_email && $doctor_email === $user->getEmail()) {
+              return \Drupal\Core\Access\AccessResult::allowed();
+            }
+          }
+        }
+        
+        // Admins can view all appointments
+        if (in_array('administrator', $account->getRoles()) || 
+            in_array('admin', $account->getRoles()) || 
+            $user_type === 'admin') {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        return \Drupal\Core\Access\AccessResult::forbidden('Access denied to this appointment.');
+        
+      case 'create':
+        // Patients and admins can create appointments
+        if ($user_type === 'patient' || $is_admin_user) {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        return \Drupal\Core\Access\AccessResult::forbidden('Only patients can book appointments.');
+        
+      case 'update':
+        // Patients can edit their own appointments (limited fields)
+        if ($user_type === 'patient' && $node->get('field_patient_ref')->target_id === $account->id()) {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        // Doctors can update appointment status for their appointments
+        if ($user_type === 'doctor') {
+          $doctor_id = $node->get('field_doctor_ref')->target_id;
+          $doctor_node = Node::load($doctor_id);
+          if ($doctor_node && $doctor_node->getOwnerId() === $account->id()) {
+            return \Drupal\Core\Access\AccessResult::allowed();
+          }
+
+          // Fallback: ownership via email match.
+          if ($doctor_node && $user) {
+            $doctor_email = ($doctor_node->hasField('field_email') && !$doctor_node->get('field_email')->isEmpty()) ? $doctor_node->get('field_email')->value : '';
+            if ($doctor_email && $doctor_email === $user->getEmail()) {
+              return \Drupal\Core\Access\AccessResult::allowed();
+            }
+          }
+        }
+        
+        // Admins can update any appointment
+        if (in_array('administrator', $account->getRoles()) || 
+            in_array('admin', $account->getRoles()) || 
+            $user_type === 'admin') {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        return \Drupal\Core\Access\AccessResult::forbidden('Access denied to edit this appointment.');
+        
+      case 'delete':
+        // Patients can delete their own pending appointments
+        if ($user_type === 'patient' && 
+            $node->get('field_patient_ref')->target_id === $account->id() &&
+            $node->get('field_appointment_status')->value === 'pending') {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        // Admins can delete any appointment
+        if (in_array('administrator', $account->getRoles()) || 
+            in_array('admin', $account->getRoles()) || 
+            $user_type === 'admin') {
+          return \Drupal\Core\Access\AccessResult::allowed();
+        }
+        
+        return \Drupal\Core\Access\AccessResult::forbidden('Access denied to delete this appointment.');
+    }
+  }
+  
+  // Default to neutral for other cases
+  return \Drupal\Core\Access\AccessResult::neutral();
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for node.
+ * 
+ * Runs before an appointment is saved.
+ */
+function practo_core_node_presave(EntityInterface $node) {
+  if ($node->bundle() == 'appointment') {
+
+    // Send notification on status change
+    if (!$node->isNew() && $node->get('field_appointment_status')->value != $node->original->get('field_appointment_status')->value) {
+      _practo_core_send_status_update($node);
+    }
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_insert() for node.
+ * 
+ * Runs after an appointment is created.
+ */
+function practo_core_node_insert(EntityInterface $node) {
+  if ($node->bundle() == 'appointment') {
+    \Drupal::messenger()->addStatus(t('Your appointment has been booked successfully! Booking ID: @id', 
+      ['@id' => $node->get('field_booking_id')->value]));
+  }
+}
+
+/**
+ * Sends status update email.
+ */
+function _practo_core_send_status_update($appointment) {
+  // Email functionality removed for practice project
+  // Status updates are now handled via dashboard notifications only
+  $status = $appointment->get('field_appointment_status')->value;
+  $booking_id = $appointment->get('field_booking_id')->value;
+  
+  // Log the status update for debugging
+  \Drupal::logger('practo_core')->notice('Appointment @id status updated to: @status', 
+    ['@id' => $booking_id, '@status' => ucfirst($status)]);
+}
+
+
+/**
+ * Implements hook_cron().
+ * 
+ * Runs periodic tasks - auto-completes past appointments.
+ */
+function practo_core_cron() {
+  
+  // Find all confirmed appointments that are in the past
+  $yesterday = date('Y-m-d', strtotime('-1 day'));
+  
+  $query = \Drupal::entityQuery('node')
+    ->condition('type', 'appointment')
+    ->condition('field_appointment_status', 'confirmed')
+    ->condition('field_appointment_date', $yesterday, '<')
+    ->accessCheck(FALSE);
+  
+  $nids = $query->execute();
+  
+  if (!empty($nids)) {
+    $appointments = Node::loadMultiple($nids);
+    
+    foreach ($appointments as $appointment) {
+      $appointment->set('field_appointment_status', 'completed');
+      $appointment->save();
+    }
+    
+    \Drupal::logger('practo_core')->notice('Auto-completed @count past appointments', 
+      ['@count' => count($nids)]);
+  }
+}
+
+
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function practo_core_preprocess_node(&$variables) {
+  $node = $variables['node'];
+  
+  // Attach library for doctor nodes
+  if ($node->bundle() == 'doctor') {
+    $variables['#attached']['library'][] = 'practo_core/node-doctor';
+  }
+  
+  // Attach library for appointment nodes
+  if ($node->bundle() == 'appointment') {
+    $variables['#attached']['library'][] = 'practo_core/node-appointment';
+  }
+}
+

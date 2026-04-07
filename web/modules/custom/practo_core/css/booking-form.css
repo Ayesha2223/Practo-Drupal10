@@ -1,0 +1,12 @@
+/* Booking Form modern styles */
+.booking-form-wrapper{max-width:600px;margin:0 auto;padding:24px;border-radius:14px;background:#ffffff;border:1px solid #e5e7eb;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.booking-form-wrapper fieldset{border:none;padding:0;margin:0 0 18px}
+.booking-form-wrapper fieldset>legend{font-weight:700;margin-bottom:12px;color:#111827}
+.booking-form-wrapper input, .booking-form-wrapper select, .booking-form-wrapper textarea{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:15px;background:#f9fafb;transition:border-color .2s ease}
+.booking-form-wrapper input:focus, .booking-form-wrapper select:focus, .booking-form-wrapper textarea:focus{outline:none;border-color:#6366f1;background:#fff}
+.booking-form-wrapper .form-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:20px}
+.booking-form-wrapper .form-actions .btn{padding:10px 18px;border:none;border-radius:10px;font-weight:700;cursor:pointer;transition:background .2s ease,color .2s ease}
+.booking-form-wrapper .form-actions .btn-primary{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.booking-form-wrapper .form-actions .btn-primary:hover{filter:brightness(.95)}
+.booking-form-wrapper .form-actions .btn-secondary{background:#e2e8f0;color:#1e293b}
+.booking-form-wrapper .form-actions .btn-secondary:hover{background:#cbd5e1}

@@ -1,0 +1,129 @@
+<div class="admin-dashboard">
+  
+  <div class="dashboard-header">
+    <h1><i class="fas fa-tachometer-alt"></i> Practo Admin Dashboard</h1>
+    <p>Complete CRUD Operations Management Panel</p>
+  </div>
+  
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <div class="stat-icon"><i class="fas fa-user-md"></i></div>
+      <div class="stat-content">
+        <h3>{{ stats.total_doctors }}</h3>
+        <p>Total Doctors</p>
+        <a href="{{ practo_safe_route('practo_core.manage_doctors') }}">Manage <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    
+    <div class="stat-card green">
+      <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+      <div class="stat-content">
+        <h3>{{ stats.total_appointments }}</h3>
+        <p>Total Appointments</p>
+        <a href="{{ practo_safe_route('practo_core.manage_appointments') }}">Manage <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    
+    <div class="stat-card orange">
+      <div class="stat-icon"><i class="fas fa-clock"></i></div>
+      <div class="stat-content">
+        <h3>{{ stats.pending_appointments }}</h3>
+        <p>Pending Appointments</p>
+      </div>
+    </div>
+    
+    <div class="stat-card purple">
+      <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+      <div class="stat-content">
+        <h3>{{ stats.confirmed_appointments }}</h3>
+        <p>Confirmed Appointments</p>
+      </div>
+    </div>
+    
+    <div class="stat-card teal">
+      <div class="stat-icon"><i class="fas fa-box"></i></div>
+      <div class="stat-content">
+        <h3>{{ stats.total_packages }}</h3>
+        <p>Health Packages</p>
+        <a href="{{ practo_safe_route('practo_core.manage_packages') }}">Manage <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    
+    <div class="stat-card pink">
+      <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
+      <div class="stat-content">
+        <h3>{{ stats.total_articles }}</h3>
+        <p>Health Articles</p>
+        <a href="{{ practo_safe_route('practo_core.manage_articles') }}">Manage <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    
+    <div class="stat-card red">
+      <div class="stat-icon"><i class="fas fa-users"></i></div>
+      <div class="stat-content">
+        <h3>{{ stats.total_users }}</h3>
+        <p>Registered Users</p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="quick-actions-panel">
+    <h2>Quick Actions (CRUD Operations)</h2>
+    <div class="action-buttons">
+      <a href="{{ practo_safe_route('node.add', {'node_type': 'doctor'}) }}" class="action-btn create">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add New Doctor</span>
+      </a>
+      <a href="{{ practo_safe_route('node.add', {'node_type': 'appointment'}) }}" class="action-btn create">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add Appointment</span>
+      </a>
+      <a href="{{ practo_safe_route('node.add', {'node_type': 'health_package'}) }}" class="action-btn create">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add Health Package</span>
+      </a>
+      <a href="{{ practo_safe_route('node.add', {'node_type': 'health_article'}) }}" class="action-btn create">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add Health Article</span>
+      </a>
+      <a href="{{ practo_safe_route('system.admin_content') }}" class="action-btn view">
+        <i class="fas fa-list"></i>
+        <span>View All Content</span>
+      </a>
+    </div>
+  </div>
+  
+  <div class="management-panel">
+    <h2>Content Management (Full CRUD)</h2>
+    <div class="management-grid">
+      <div class="management-card">
+        <i class="fas fa-user-md fa-3x"></i>
+        <h3>Doctors</h3>
+        <p>Create, Read, Update, Delete doctors</p>
+        <a href="{{ practo_safe_route('practo_core.manage_doctors') }}" class="btn btn-primary">Manage Doctors</a>
+      </div>
+      
+      <div class="management-card">
+        <i class="fas fa-calendar-alt fa-3x"></i>
+        <h3>Appointments</h3>
+        <p>Create, Read, Update, Delete appointments</p>
+        <a href="{{ practo_safe_route('practo_core.manage_appointments') }}" class="btn btn-primary">Manage Appointments</a>
+      </div>
+      
+      <div class="management-card">
+        <i class="fas fa-box-open fa-3x"></i>
+        <h3>Health Packages</h3>
+        <p>Create, Read, Update, Delete packages</p>
+        <a href="{{ practo_safe_route('practo_core.manage_packages') }}" class="btn btn-primary">Manage Packages</a>
+      </div>
+      
+      <div class="management-card">
+        <i class="fas fa-newspaper fa-3x"></i>
+        <h3>Health Articles</h3>
+        <p>Create, Read, Update, Delete articles</p>
+        <a href="{{ practo_safe_route('practo_core.manage_articles') }}" class="btn btn-primary">Manage Articles</a>
+      </div>
+    </div>
+  </div>
+  
+</div>

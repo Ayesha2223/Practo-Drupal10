@@ -1,0 +1,8 @@
+services:
+  practo_core.twig_extension:
+    class: Drupal\practo_core\Twig\PractoTwigExtension
+    arguments:
+      - '@path.validator'
+      - '@router.route_provider'
+    tags:
+      - { name: twig.extension }

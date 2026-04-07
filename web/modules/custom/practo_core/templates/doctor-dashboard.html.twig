@@ -1,0 +1,176 @@
+{#
+/**
+ * @file
+ * Default theme implementation for doctor dashboard page.
+ *
+ * Available variables:
+ * - doctor_name: Doctor's name
+ * - doctor_id: Doctor's node ID
+ * - doctor_profile_url: URL to doctor's public profile
+ * - doctor_published: Boolean indicating if doctor profile is published
+ * - appointments: Array of appointments
+ * - total_appointments: Total number of appointments
+ */
+#}
+
+<div class="doctor-dashboard container">
+  <div class="row">
+    <div class="col-12">
+      <div class="dashboard-header">
+        <h2>Welcome, Dr. {{ doctor_name }}</h2>
+        <p class="lead">Manage your appointments and patient consultations</p>
+      </div>
+
+      {% if not doctor_published %}
+        <div class="alert alert-warning" role="alert" style="margin-bottom: 20px;">
+          Your doctor profile is pending admin verification. Patients won’t see your profile in the public list until it’s approved.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="row mb-4">
+    <div class="col-lg-4">
+      <div class="profile-card">
+        <div class="profile-card__header">
+          <div class="profile-card__title">Profile Summary</div>
+          {% if doctor_published %}
+            <span class="profile-pill profile-pill--verified">Verified</span>
+          {% else %}
+            <span class="profile-pill profile-pill--pending">Pending</span>
+          {% endif %}
+        </div>
+
+        <div class="profile-photo" style="margin: 16px 20px 0; display: flex; align-items: center; gap: 12px;">
+          {% set _n = doctor_name|default('')|trim %}
+          {% set _parts = _n ? _n|split(' ') : [] %}
+          {% set _first = _parts|length > 0 ? (_parts|first) : '' %}
+          {% set _last = _parts|length > 1 ? (_parts|last) : '' %}
+          {% set _initials = ((_first|slice(0, 1)) ~ (_last ? _last|slice(0, 1) : ''))|upper %}
+          <div class="doctor-avatar" style="width: 64px; height: 64px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center;">
+            <span class="doctor-avatar__text" style="font-weight: 900; color: #0b2e5d;">{{ _initials ?: 'DR' }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <div style="font-weight: 700; color: #0b2e5d;">Dr. {{ doctor_name }}</div>
+            <div style="color: #64748b; font-size: 13px;">{{ doctor_meta.specialization ?: 'Specialization not specified' }}</div>
+          </div>
+        </div>
+
+        <div class="profile-meta">
+          <div class="profile-meta__row">
+            <div class="profile-meta__label">Specialization</div>
+            <div class="profile-meta__value">{{ doctor_meta.specialization ?: 'Not specified' }}</div>
+          </div>
+          <div class="profile-meta__row">
+            <div class="profile-meta__label">Clinic</div>
+            <div class="profile-meta__value">{{ doctor_meta.clinic_name ?: 'Not specified' }}</div>
+          </div>
+          <div class="profile-meta__row">
+            <div class="profile-meta__label">City</div>
+            <div class="profile-meta__value">{{ doctor_meta.city ?: 'Not specified' }}</div>
+          </div>
+          <div class="profile-meta__row">
+            <div class="profile-meta__label">Phone</div>
+            <div class="profile-meta__value">{{ doctor_meta.phone ?: 'Not specified' }}</div>
+          </div>
+          <div class="profile-meta__row">
+            <div class="profile-meta__label">Email</div>
+            <div class="profile-meta__value">{{ doctor_meta.email ?: 'Not specified' }}</div>
+          </div>
+          <div class="profile-meta__row">
+            <div class="profile-meta__label">Fee</div>
+            <div class="profile-meta__value">{% if doctor_meta.fee is not null and doctor_meta.fee != '' %}₹{{ doctor_meta.fee }}{% else %}Not specified{% endif %}</div>
+          </div>
+          <div class="profile-meta__row">
+            <div class="profile-meta__label">Experience</div>
+            <div class="profile-meta__value">{% if doctor_meta.experience_years is not null and doctor_meta.experience_years != '' %}{{ doctor_meta.experience_years }} yrs{% else %}Not specified{% endif %}</div>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <a href="{{ doctor_profile_url }}" class="btn btn-outline-primary">View Public Profile</a>
+          <a href="{{ practo_safe_route('entity.node.edit_form', {'node': doctor_id}) }}" class="btn btn-outline-info">Edit Profile</a>
+          <a href="{{ practo_safe_route('user.logout') }}" class="btn btn-outline-secondary">Logout</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="stats-grid">
+        <div class="stat-card stat-card--primary">
+          <div class="stat-number">{{ total_appointments }}</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ appointments|length }}</div>
+          <div class="stat-label">Showing ({{ active_filter|capitalize }})</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{% if doctor_published %}Live{% else %}Pending{% endif %}</div>
+          <div class="stat-label">Profile Status</div>
+        </div>
+      </div>
+
+      <div class="notice-card">
+        <div class="notice-card__title">Today’s focus</div>
+        <div class="notice-card__text">Review new bookings, confirm pending appointments, and keep your profile details updated.</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12">
+      <div class="appointments-section">
+        <div class="dashboard-filters">
+          <a href="{{ practo_safe_route('practo_core.doctor_dashboard', {}, {'query': {'filter': 'active'}}) }}" class="btn btn-sm {% if active_filter == 'active' %}btn-primary{% else %}btn-outline-primary{% endif %}" style="margin-right: 8px;">Active</a>
+          <a href="{{ practo_safe_route('practo_core.doctor_dashboard', {}, {'query': {'filter': 'all'}}) }}" class="btn btn-sm {% if active_filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}" style="margin-right: 8px;">All</a>
+          <a href="{{ practo_safe_route('practo_core.doctor_dashboard', {}, {'query': {'filter': 'completed'}}) }}" class="btn btn-sm {% if active_filter == 'completed' %}btn-primary{% else %}btn-outline-primary{% endif %}" style="margin-right: 8px;">Completed</a>
+          <a href="{{ practo_safe_route('practo_core.doctor_dashboard', {}, {'query': {'filter': 'cancelled'}}) }}" class="btn btn-sm {% if active_filter == 'cancelled' %}btn-primary{% else %}btn-outline-primary{% endif %}">Cancelled</a>
+        </div>
+
+        {% set filter_label = 'Active' %}
+        {% if active_filter == 'all' %}{% set filter_label = 'All' %}{% endif %}
+        {% if active_filter == 'completed' %}{% set filter_label = 'Completed' %}{% endif %}
+        {% if active_filter == 'cancelled' %}{% set filter_label = 'Cancelled' %}{% endif %}
+        <h3>{{ filter_label }} Appointments</h3>
+        
+        {% if appointments %}
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Patient Name</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for appointment in appointments %}
+                  <tr>
+                    <td><strong>{{ appointment.booking_id }}</strong></td>
+                    <td>{{ appointment.patient_name }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.time }}</td>
+                    <td><span class="badge {{ appointment.status_class }}">{{ appointment.status }}</span></td>
+                    <td>{{ appointment.actions|raw }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="no-appointments">
+            <div class="text-center py-5">
+              <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+              <h4>No appointments yet</h4>
+              <p class="text-muted">Patients will book appointments with you. Check back later!</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

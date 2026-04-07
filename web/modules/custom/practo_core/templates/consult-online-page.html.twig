@@ -1,0 +1,50 @@
+<div class="service-page consult-online">
+  <div class="page-banner">
+    <div class="container">
+      <h1><i class="fas fa-video"></i> Consult Doctors Online</h1>
+      <p>Connect with top doctors via video consultation from home</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="features-bar">
+      <div class="feature-item">
+        <i class="fas fa-shield-alt"></i>
+        <span>100% Safe & Secure</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-clock"></i>
+        <span>Available 24/7</span>
+      </div>
+      <div class="feature-item">
+        <i class="fas fa-rupee-sign"></i>
+        <span>Affordable Pricing</span>
+      </div>
+    </div>
+    
+    <h2 class="section-title">Available Doctors for Online Consultation</h2>
+    
+    <div class="doctors-grid">
+      {% for doctor in doctors %}
+        <div class="doctor-online-card">
+          <span class="online-badge">Available Now</span>
+          <div class="doctor-img">
+            {% set _n = doctor.name|default('')|trim %}
+            {% set _parts = _n ? _n|split(' ') : [] %}
+            {% set _first = _parts|length > 0 ? (_parts|first) : '' %}
+            {% set _last = _parts|length > 1 ? (_parts|last) : '' %}
+            {% set _initials = ((_first|slice(0, 1)) ~ (_last ? _last|slice(0, 1) : ''))|upper %}
+            <div class="doctor-avatar" aria-label="Dr. {{ doctor.name }}">
+              <span class="doctor-avatar__text">{{ _initials ?: 'DR' }}</span>
+            </div>
+          </div>
+          <h4>Dr. {{ doctor.name }}</h4>
+          <p>{{ doctor.specialization }}</p>
+          <p class="exp">{{ doctor.experience }} yrs exp</p>
+          <p class="fee">₹{{ doctor.fee }} consultation</p>
+          <a href="{{ practo_safe_internal('/book-appointment/' ~ doctor.id) }}" class="btn btn-primary btn-sm">Consult Now</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

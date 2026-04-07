@@ -1,0 +1,23 @@
+.doctor-profile-page{max-width:1100px;margin:0 auto;padding:30px 15px}
+.doctor-profile-hero{display:flex;gap:18px;align-items:center;background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:18px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.doctor-profile-photo{width:110px;height:110px;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#eef2ff,#f5f3ff);display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:40px;flex:0 0 110px}
+.doctor-profile-photo img{width:100%;height:100%;object-fit:cover}
+.doctor-avatar{width:100%;height:100%;border-radius:16px;background:radial-gradient(160px 120px at 25% 25%,#e0f2fe 0%,rgba(224,242,254,0) 60%),linear-gradient(135deg,#eef2ff,#f5f3ff);display:flex;align-items:center;justify-content:center;border:1px solid rgba(99,102,241,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+.doctor-avatar--lg{border-radius:16px}
+.doctor-avatar__text{font-weight:950;letter-spacing:.8px;color:#0b2e5d;font-size:34px}
+.doctor-profile-main{flex:1;min-width:0}
+.doctor-profile-main h1{margin:0 0 6px;font-size:28px;font-weight:900;color:#111827}
+.doctor-meta{display:flex;flex-wrap:wrap;gap:12px;color:#4b5563;font-size:14px}
+.doctor-meta span{display:inline-flex;gap:8px;align-items:center}
+.doctor-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.doctor-cta a{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:12px;text-decoration:none;font-weight:800;font-size:14px}
+.doctor-cta a.primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff}
+.doctor-cta a.secondary{background:#f3f4f6;color:#111827}
+
+.doctor-profile-sections{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-top:18px}
+.section-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.section-card h2{margin:0 0 10px;font-size:16px;font-weight:900;color:#111827}
+.section-card p{margin:0 0 8px;color:#374151}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:10px;margin:10px 0}
+.kv .k{color:#6b7280;font-weight:700}
+.kv .v{color:#111827;font-weight:700}

@@ -1,0 +1,80 @@
+
+<?php
+
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_install().
+ * Runs when the module is first enabled.
+ */
+function practo_appointments_install() {
+  // Create storage for field_doctor (site-wide).
+  if (!FieldStorageConfig::loadByName('node', 'field_doctor')) {
+    FieldStorageConfig::create([
+      'field_name'   => 'field_doctor',
+      'entity_type'  => 'node',
+      'type'         => 'entity_reference',
+      'settings'     => [
+        'target_type' => 'node',
+      ],
+      'cardinality'  => 1,
+      'translatable' => FALSE,
+    ])->save();
+  }
+
+  // Attach field_doctor to appointment bundle, targeting doctor nodes.
+  if (!FieldConfig::loadByName('node', 'appointment', 'field_doctor')) {
+    FieldConfig::create([
+      'field_name'  => 'field_doctor',
+      'entity_type' => 'node',
+      'bundle'      => 'appointment',
+      'label'       => 'Doctor',
+      'required'    => TRUE,
+      'settings'    => [
+        'handler'          => 'default',
+        'handler_settings' => [
+          'target_bundles' => ['doctor' => 'doctor'],
+        ],
+      ],
+    ])->save();
+  }
+
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+}
+
+/**
+ * Implements hook_update_N().
+ * Use this if the module is already enabled.
+ */
+function practo_appointments_update_9001() {
+  // Same as in install(), so updates/first-time deployments also get the field.
+  if (!FieldStorageConfig::loadByName('node', 'field_doctor')) {
+    FieldStorageConfig::create([
+      'field_name'   => 'field_doctor',
+      'entity_type'  => 'node',
+      'type'         => 'entity_reference',
+      'settings'     => ['target_type' => 'node'],
+      'cardinality'  => 1,
+      'translatable' => FALSE,
+    ])->save();
+  }
+
+  if (!FieldConfig::loadByName('node', 'appointment', 'field_doctor')) {
+    FieldConfig::create([
+      'field_name'  => 'field_doctor',
+      'entity_type' => 'node',
+      'bundle'      => 'appointment',
+      'label'       => 'Doctor',
+      'required'    => TRUE,
+      'settings'    => [
+        'handler'          => 'default',
+        'handler_settings' => [
+          'target_bundles' => ['doctor' => 'doctor'],
+        ],
+      ],
+    ])->save();
+  }
+
+  \Drupal::service('entity_field.manager')->clearCachedFieldDefinitions();
+}

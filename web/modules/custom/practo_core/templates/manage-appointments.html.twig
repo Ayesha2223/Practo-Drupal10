@@ -1,0 +1,75 @@
+{#
+/**
+ * @file
+ * Manage Appointments - Full CRUD Operations
+ */
+#}
+
+<div class="manage-content-page">
+  
+  <div class="page-header-admin">
+    <div>
+      <h1><i class="fas fa-calendar-alt"></i> Manage Appointments (CRUD)</h1>
+      <p>Create, Read, Update, Delete appointment records</p>
+    </div>
+    <a href="{{ practo_safe_route('node.add', {'node_type': 'appointment'}) }}" class="btn btn-success btn-lg">
+      <i class="fas fa-plus"></i> Add New Appointment
+    </a>
+  </div>
+  
+  {% if appointments is empty %}
+    <div class="empty-state-admin">
+      <i class="fas fa-calendar-times fa-5x"></i>
+      <h3>No Appointments Found</h3>
+      <p>No appointments have been booked yet</p>
+    </div>
+  {% else %}
+    <div class="crud-table-wrapper">
+      <table class="crud-table">
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions (CRUD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appt in appointments %}
+            <tr>
+              <td><strong>{{ appt.booking_id }}</strong></td>
+              <td>{{ appt.patient_name }}</td>
+              <td>Dr. {{ appt.doctor_name }}</td>
+              <td>{{ appt.date }}</td>
+              <td>{{ appt.time }}</td>
+              <td>
+                <span class="status-badge status-{{ appt.status }}">
+                  {{ appt.status|capitalize }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <a href="{{ appt.view_url }}" class="action-btn-small view" title="Read/View">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a href="{{ appt.edit_url }}" class="action-btn-small edit" title="Update/Edit">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a href="{{ appt.delete_url }}" class="action-btn-small delete" title="Delete" onclick="return confirm('Delete this appointment?')">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="table-footer">
+      <p>Total Appointments: <strong>{{ appointments|length }}</strong></p>
+    </div>
+  {% endif %}
+  
+</div>

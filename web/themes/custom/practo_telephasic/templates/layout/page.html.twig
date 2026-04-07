@@ -1,0 +1,190 @@
+{#
+/**
+ * @file
+ * Professional page template with clean navigation
+ */
+#}
+
+<div id="page-wrapper">
+  
+  {# Professional Header #}
+  <header id="header" role="banner">
+    <div class="header-container">
+      
+      {# Logo Section #}
+      <div class="site-branding">
+        {% if logo %}
+          <a href="{{ front_page }}" title="{{ 'Home'|t }}" class="site-logo">
+            <img src="{{ logo }}" alt="{{ site_name }}" />
+          </a>
+        {% else %}
+          <a href="{{ front_page }}" class="site-name-text">
+            <i class="fas fa-heartbeat"></i>
+            <span>{{ site_name }}</span>
+          </a>
+        {% endif %}
+      </div>
+      
+      {# Main Navigation #}
+      <nav class="main-navigation" role="navigation">
+        <ul class="nav-menu">
+          <li><a href="{{ base_path }}">Home</a></li>
+          <li><a href="{{ base_path }}doctors">Find Doctors</a></li>
+          <li><a href="{{ base_path }}health-checkups">Health Packages</a></li>
+          <li><a href="{{ base_path }}lab-tests">Lab Tests</a></li>
+          <li><a href="{{ base_path }}health-articles">Health Tips</a></li>
+        </ul>
+      </nav>
+      
+      {# Right Side Actions #}
+      <div class="header-actions">
+        {% if logged_in %}
+          {# User is logged in - show user menu #}
+          <div class="user-menu">
+            <button class="user-menu-toggle">
+              <i class="fas fa-user-circle"></i>
+              <span>{{ user.getDisplayName() }}</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="user-dropdown">
+              <a href="{{ base_path }}dashboard" class="dropdown-item">
+                <i class="fas fa-tachometer-alt"></i> {{ 'My Dashboard'|t }}
+              </a>
+              <a href="{{ base_path }}user/appointments" class="dropdown-item">
+                <i class="fas fa-calendar"></i> {{ 'My Appointments'|t }}
+              </a>
+              <a href="{{ base_path }}user/profile/edit" class="dropdown-item">
+                <i class="fas fa-user-edit"></i> {{ 'Edit Profile'|t }}
+              </a>
+              {% if user.hasPermission('administer site configuration') %}
+                <a href="{{ base_path }}admin/practo/dashboard" class="dropdown-item">
+                  <i class="fas fa-cog"></i> {{ 'Admin Dashboard'|t }}
+                </a>
+              {% endif %}
+              <a href="{{ base_path }}user/logout" class="dropdown-item logout">
+                <i class="fas fa-sign-out-alt"></i> {{ 'Logout'|t }}
+              </a>
+            </div>
+          </div>
+        {% else %}
+          {# User is not logged in - show login and register buttons #}
+          <div class="auth-buttons">
+            <a href="{{ base_path }}user/login" class="btn-nav-secondary">
+              <i class="fas fa-sign-in-alt"></i>
+              <span>{{ 'Login'|t }}</span>
+            </a>
+            <div class="user-menu">
+              <button class="user-menu-toggle btn-nav-primary" type="button">
+                <i class="fas fa-user-plus"></i>
+                <span>{{ 'Register'|t }}</span>
+                <i class="fas fa-chevron-down"></i>
+              </button>
+              <div class="user-dropdown">
+                <a href="{{ base_path }}register/patient" class="dropdown-item">
+                  {{ 'Register as Patient'|t }}
+                </a>
+                <a href="{{ base_path }}register/doctor" class="dropdown-item">
+                  {{ 'Register as Doctor'|t }}
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      
+    </div>
+  </header>
+  
+  {# Main Content #}
+  <main id="main-content" role="main">
+    
+    {# Breadcrumb #}
+    {% if page.breadcrumb %}
+      <div class="breadcrumb-wrapper">
+        <div class="container">
+          {{ page.breadcrumb }}
+        </div>
+      </div>
+    {% endif %}
+    
+    {# Messages #}
+    {% if messages %}
+      <div class="messages-wrapper">
+        <div class="container">
+          {{ messages }}
+        </div>
+      </div>
+    {% endif %}
+    
+    {# Page Content #}
+    <div class="page-content">
+      {{ page.content }}
+    </div>
+    
+  </main>
+  
+  {# Professional Footer #}
+  <footer id="footer" role="contentinfo">
+    <div class="footer-content">
+      <div class="container">
+        <div class="footer-grid">
+          
+          {# About Section #}
+          <div class="footer-col">
+            <h3>Practo</h3>
+            <p>India's leading healthcare platform connecting patients with verified doctors and hospitals.</p>
+            <div class="footer-social">
+              <a href="https://facebook.com/practo" target="_blank"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://twitter.com/practo" target="_blank"><i class="fab fa-twitter"></i></a>
+              <a href="https://instagram.com/practo" target="_blank"><i class="fab fa-instagram"></i></a>
+              <a href="https://linkedin.com/company/practo" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          
+          {# Quick Links #}
+          <div class="footer-col">
+            <h3>For Patients</h3>
+            <ul>
+              <li><a href="{{ base_path }}doctors">Find Doctors</a></li>
+              <li><a href="{{ base_path }}health-checkups">Health Checkups</a></li>
+              <li><a href="{{ base_path }}lab-tests">Book Lab Tests</a></li>
+              <li><a href="{{ base_path }}consult-online">Consult Online</a></li>
+            </ul>
+          </div>
+          
+          {# Services #}
+          <div class="footer-col">
+            <h3>Our Services</h3>
+            <ul>
+              <li><a href="{{ base_path }}find-hospitals">Find Hospitals</a></li>
+              <li><a href="{{ base_path }}medicines">Order Medicines</a></li>
+              <li><a href="{{ base_path }}health-articles">Health Articles</a></li>
+            </ul>
+          </div>
+          
+          {# Contact #}
+          <div class="footer-col">
+            <h3>Contact Us</h3>
+            <ul class="contact-list">
+              <li><i class="fas fa-phone"></i> +91 123-456-7890</li>
+              <li><i class="fas fa-envelope"></i> support@practo.com</li>
+              <li><i class="fas fa-map-marker-alt"></i> Hyderabad, India</li>
+            </ul>
+          </div>
+          
+        </div>
+        
+        {# Footer Bottom #}
+        <div class="footer-bottom">
+          <p>&copy; {{ "now"|date("Y") }} {{ site_name }}. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="{{ base_path }}privacy-policy">Privacy Policy</a>
+            <a href="{{ base_path }}terms">Terms of Service</a>
+            <a href="{{ base_path }}contact">Contact</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+</div>

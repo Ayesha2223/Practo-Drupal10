@@ -1,0 +1,50 @@
+{#
+/**
+ * @file
+ * Template for doctor search block.
+ */
+#}
+
+<div class="doctor-search-block">
+  <h2>Find Your Doctor</h2>
+  
+  <form action="/search-doctors" method="get" class="search-form">
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="search-query">Search by name or clinic</label>
+        <input type="text" 
+               id="search-query" 
+               name="q" 
+               class="form-control" 
+               placeholder="Enter doctor name or clinic...">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="search-specialization">Specialization</label>
+        <select id="search-specialization" name="specialization" class="form-control">
+          <option value="">All Specializations</option>
+          {% for key, value in specializations %}
+            <option value="{{ key }}">{{ value|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="search-city">City</label>
+        <select id="search-city" name="city" class="form-control">
+          <option value="">All Cities</option>
+          {% for city in cities %}
+            <option value="{{ city }}">{{ city }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary btn-block">
+      <i class="fas fa-search"></i> Search
+    </button>
+  </form>
+</div>

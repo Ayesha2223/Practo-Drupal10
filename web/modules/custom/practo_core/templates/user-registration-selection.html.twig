@@ -1,0 +1,83 @@
+{#
+/**
+ * @file
+ * Default theme implementation for user registration selection page.
+ *
+ * Available variables:
+ * - doctor_url: URL for doctor registration
+ * - patient_url: URL for patient registration
+ */
+#}
+
+<div class="registration-selection container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="text-center mb-4">
+        <h2>Join Our Healthcare Platform</h2>
+        <p class="lead">Choose your account type to get started</p>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="card registration-card h-100">
+            <div class="card-body text-center">
+              <div class="icon mb-3">
+                <i class="fas fa-user-md fa-3x text-primary"></i>
+              </div>
+              <h4 class="card-title">Register as Doctor</h4>
+              <p class="card-text">Join our network of healthcare professionals and help patients</p>
+              <a href="{{ doctor_url }}" class="btn btn-primary btn-lg">Register as Doctor</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6 mb-3">
+          <div class="card registration-card h-100">
+            <div class="card-body text-center">
+              <div class="icon mb-3">
+                <i class="fas fa-user fa-3x text-success"></i>
+              </div>
+              <h4 class="card-title">Register as Patient</h4>
+              <p class="card-text">Book appointments and manage your healthcare needs</p>
+              <a href="{{ patient_url }}" class="btn btn-success btn-lg">Register as Patient</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-4">
+        <p>Already have an account? <a href="{{ practo_safe_internal('/user/login') }}">Login here</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.registration-selection {
+  padding: 60px 0;
+}
+
+.registration-card {
+  transition: transform 0.2s ease-in-out;
+  border: 1px solid #dee2e6;
+}
+
+.registration-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.registration-card .icon {
+  color: #007bff;
+}
+
+.registration-card h4 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.registration-card p {
+  color: #666;
+  margin-bottom: 20px;
+}
+</style>

@@ -1,0 +1,11 @@
+/* Login & Registration Forms modern styles */
+.registration-form,.login-form{max-width:500px;margin:0 auto;padding:28px;border-radius:14px;background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.registration-form h2,.login-form h2{margin-bottom:20px;font-size:26px;font-weight:800;color:#111827;text-align:center}
+.registration-form input,.registration-form select,.login-form input{width:100%;padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;background:#f9fafb;transition:border-color .2s ease}
+.registration-form input:focus,.registration-form select:focus,.login-form input:focus{outline:none;border-color:#6366f1;background:#fff}
+.registration-form .form-actions,.login-form .form-actions{display:flex;gap:12px;justify-content:flex-end;margin-top:20px}
+.registration-form .btn,.login-form .btn{padding:10px 18px;border:none;border-radius:10px;font-weight:700;cursor:pointer;transition:background .2s ease,color .2s ease}
+.registration-form .btn-primary,.login-form .btn-primary{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+.registration-form .btn-primary:hover,.login-form .btn-primary:hover{filter:brightness(.95)}
+.registration-form .btn-secondary,.login-form .btn-secondary{background:#e2e8f0;color:#1e293b}
+.registration-form .btn-secondary:hover,.login-form .btn-secondary:hover{background:#cbd5e1}

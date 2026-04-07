@@ -1,0 +1,281 @@
+<div class="practo-homepage-full">
+  
+  <section class="hero-search-section">
+    <div class="hero-overlay"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1>Find & Book</h1>
+        <h2><span class="highlight">Health Checkup Packages</span></h2>
+        
+        <div class="search-box-wrapper">
+          <form action="{{ practo_safe_internal('/doctors') }}" method="get" class="hero-search-form">
+            <div class="search-input-group">
+              <div class="search-field location-field">
+                <i class="fas fa-map-marker-alt"></i>
+                <select name="city" class="search-select">
+                  <option value="">Select City</option>
+                  {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              
+              <div class="search-field-divider"></div>
+              
+              <div class="search-field specialty-field">
+                <i class="fas fa-search"></i>
+                <input type="text" 
+                       name="name" 
+                       placeholder="Search doctors, clinics, hospitals, etc." 
+                       class="search-input">
+              </div>
+              
+              <button type="submit" class="search-submit-btn">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+        
+        <div class="quick-actions">
+          <a href="{{ practo_safe_internal('/health-checkups') }}" class="quick-action-card">
+            <i class="fas fa-clinic-medical"></i>
+            <span>Health Checkup</span>
+          </a>
+          <a href="{{ practo_safe_internal('/consult-online') }}" class="quick-action-card">
+            <i class="fas fa-video"></i>
+            <span>Consult Online</span>
+          </a>
+          <a href="{{ practo_safe_internal('/find-hospitals') }}" class="quick-action-card">
+            <i class="fas fa-hospital"></i>
+            <span>Find Hospitals</span>
+          </a>
+          <a href="{{ practo_safe_internal('/medicines') }}" class="quick-action-card">
+            <i class="fas fa-pills"></i>
+            <span>Order Medicines</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="specialities-section">
+    <div class="container">
+      <h2 class="section-heading">Consult top doctors online for any health concern</h2>
+      <p class="section-subheading">Private online consultations with verified doctors in all specialists</p>
+
+      <div class="specialities-carousel" data-carousel="specialities">
+        <div class="specialities-track">
+          {% for key, spec in specializations %}
+            <a href="{{ practo_safe_internal('/doctors') }}" class="speciality-card" data-specialization="{{ key }}">
+              <div class="speciality-icon">
+                <i class="fas fa-{{ spec.icon }}"></i>
+              </div>
+              <h3>{{ spec.label }}</h3>
+              <p>{{ spec.description }}</p>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="view-all-center">
+        <a href="{{ practo_safe_internal('/doctors') }}" class="btn btn-outline-primary">View All Specialities</a>
+      </div>
+    </div>
+  </section>
+  
+  <section class="lab-tests-section">
+    <div class="container">
+      <div class="lab-tests-content">
+        <div class="lab-tests-info">
+          <h2>Book lab tests & health checkup packages</h2>
+          <ul class="lab-features">
+            <li><i class="fas fa-check-circle"></i> Certified labs</li>
+            <li><i class="fas fa-check-circle"></i> Free sample pickup</li>
+            <li><i class="fas fa-check-circle"></i> Online reports in 24-48 hrs</li>
+            <li><i class="fas fa-check-circle"></i> Best prices guaranteed</li>
+          </ul>
+          <a href="{{ practo_safe_internal('/lab-tests') }}" class="btn btn-primary btn-lg">Explore Packages</a>
+        </div>
+        <div class="lab-tests-image">
+          <i class="fas fa-flask fa-10x" style="color: #667eea;"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="health-packages-section">
+    <div class="container">
+      <h2 class="section-heading">Popular health checkup packages</h2>
+      <p class="section-subheading">Comprehensive health packages for you and your family</p>
+      
+      <div class="packages-grid">
+        {% for package in health_packages %}
+          <div class="package-card">
+            <div class="package-badge">{{ package.discount }}% OFF</div>
+            <div class="package-header">
+              <h3>{{ package.name }}</h3>
+              <p>{{ package.tests }} Tests included</p>
+            </div>
+            <div class="package-price">
+              <span class="original-price">₹{{ (package.price * 2)|number_format }}</span>
+              <span class="discounted-price">₹{{ package.price }}</span>
+            </div>
+            <a href="{{ practo_safe_internal('/book-package/' ~ loop.index) }}" class="btn btn-success btn-block">Book Now</a>
+          </div>
+        {% endfor %}
+      </div>
+      
+      <div class="view-all-center">
+        <a href="{{ practo_safe_internal('/health-checkups') }}" class="btn btn-primary btn-lg">View All Packages</a>
+      </div>
+    </div>
+  </section>
+  
+  <section class="featured-doctors-full">
+    <div class="container">
+      <h2 class="section-heading">Top Doctors to consult</h2>
+      <p class="section-subheading">Book appointments with verified doctors</p>
+      
+      <div class="doctors-carousel">
+        {% for doctor in featured_doctors %}
+          <div class="doctor-card-practo">
+            <div class="doctor-image">
+              {% set _n = doctor.name|default('')|trim %}
+              {% set _parts = _n ? _n|split(' ') : [] %}
+              {% set _first = _parts|length > 0 ? (_parts|first) : '' %}
+              {% set _last = _parts|length > 1 ? (_parts|last) : '' %}
+              {% set _initials = ((_first|slice(0, 1)) ~ (_last ? _last|slice(0, 1) : ''))|upper %}
+              <div class="doctor-avatar" aria-label="Dr. {{ doctor.name }}">
+                <span class="doctor-avatar__text">{{ _initials ?: 'DR' }}</span>
+              </div>
+            </div>
+            <div class="doctor-info">
+              <h4>Dr. {{ doctor.name }}</h4>
+              <p class="doctor-spec">{{ doctor.specialization }}</p>
+              <p class="doctor-qual">{{ doctor.qualification }}</p>
+              <p class="doctor-exp">{{ doctor.experience }} years experience</p>
+              <div class="doctor-rating">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span>4.5</span>
+              </div>
+            </div>
+            <div class="doctor-actions">
+              <p class="consultation-fee">₹{{ doctor.fee }}</p>
+              <a href="{{ practo_safe_internal('/doctor/' ~ doctor.id) }}" class="btn btn-sm btn-outline-primary">View Profile</a>
+              <a href="{{ practo_safe_internal('/book-appointment/' ~ doctor.id) }}" class="btn btn-sm btn-primary">Book Appointment</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      
+      <div class="view-all-center">
+        <a href="{{ practo_safe_internal('/doctors') }}" class="btn btn-primary btn-lg">View All Doctors</a>
+      </div>
+    </div>
+  </section>
+  
+  <section class="health-articles-section">
+    <div class="container">
+      <h2 class="section-heading">Read top articles from health experts</h2>
+      <p class="section-subheading">Health articles that keep you informed about good health practices</p>
+      
+      <div class="articles-grid">
+        {% for article in health_articles %}
+          <div class="article-card">
+            <div class="article-image{% if article.image %} has-image{% endif %}">
+              {% if article.image %}
+                <img src="{{ article.image }}" alt="{{ article.title }}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+              {% else %}
+                <div style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-newspaper fa-2x" style="color: #64748b;"></i>
+                </div>
+              {% endif %}
+              <span class="article-category">{{ article.category }}</span>
+            </div>
+            <div class="article-content">
+              <h3>{{ article.title }}</h3>
+              <a href="{{ practo_safe_internal('/articles/' ~ loop.index) }}" class="article-link">Read More <i class="fas fa-arrow-right"></i></a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      
+      <div class="view-all-center">
+        <a href="{{ practo_safe_internal('/health-articles') }}" class="btn btn-outline-primary">View All Articles</a>
+      </div>
+    </div>
+  </section>
+  
+  <section class="download-app-section">
+    <div class="container">
+      <div class="download-app-content">
+        <div class="app-info">
+          <h2>Download the Practo app</h2>
+          <p>Access video consultation with India's top doctors on the Practo app. Connect with doctors online, available 24/7, from the comfort of your home.</p>
+          <div class="app-features">
+            <div class="app-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Consult top doctors 24x7</span>
+            </div>
+            <div class="app-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Free follow-up consultations</span>
+            </div>
+            <div class="app-feature">
+              <i class="fas fa-check-circle"></i>
+              <span>Medicines delivered at home</span>
+            </div>
+          </div>
+          <div class="app-downloads">
+            <a href="#" class="app-download-btn">
+              <i class="fab fa-google-play"></i>
+              <div>
+                <span>GET IT ON</span>
+                <strong>Google Play</strong>
+              </div>
+            </a>
+            <a href="#" class="app-download-btn">
+              <i class="fab fa-apple"></i>
+              <div>
+                <span>Download on the</span>
+                <strong>App Store</strong>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="app-mockup">
+          <i class="fas fa-mobile-alt fa-10x" style="color: white;"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="statistics-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-box">
+          <h3>{{ statistics.doctors }}+</h3>
+          <p>Verified Doctors</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ statistics.appointments }}+</h3>
+          <p>Appointments Booked</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ statistics.cities }}+</h3>
+          <p>Cities Covered</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ statistics.clinics }}+</h3>
+          <p>Partner Clinics</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+</div>

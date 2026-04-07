@@ -1,0 +1,23 @@
+{#
+/**
+ * @file
+ * Template for featured doctors block.
+ */
+#}
+
+<div class="featured-doctors-block">
+  <h3>Featured Doctors</h3>
+  
+  {% if doctors is empty %}
+    <p>No doctors available.</p>
+  {% else %}
+    <div class="featured-doctors-list">
+      {% for doctor in doctors %}
+        <div class="featured-doctor-item">
+          <h4><a href="{{ doctor.profile_url }}">Dr. {{ doctor.name }}</a></h4>
+          <p>{{ doctor.specialization }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

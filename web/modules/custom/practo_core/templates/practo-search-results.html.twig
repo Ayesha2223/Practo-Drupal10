@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * Template for search results page.
+ */
+#}
+
+<div class="search-results-page">
+  <h1>Search Results</h1>
+  
+  {% if search_term %}
+    <p>Showing results for: <strong>{{ search_term }}</strong></p>
+  {% endif %}
+  
+  <p>Found {{ count }} doctor(s)</p>
+  
+  <div class="search-results-list">
+    {% if doctors is empty %}
+      <p>No doctors found.</p>
+    {% else %}
+      {% for doctor in doctors %}
+        {{ doctor }}
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>

@@ -1,0 +1,11 @@
+/vendor/
+/core/
+/modules/contrib/
+/themes/contrib/
+/web/sites/default/files/
+/sites/default/files/
+/config/
+/node_modules/
+/web/core/
+/web/modules/contrib/
+/web/themes/contrib/

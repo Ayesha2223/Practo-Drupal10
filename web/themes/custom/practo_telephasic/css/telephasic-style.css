@@ -1,0 +1,179 @@
+/**
+ * @file
+ * Main Telephasic theme styles
+ */
+
+/* ========================================
+   HERO BANNER STYLES
+======================================== */
+
+.region-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.region-hero:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+  opacity: 0.3;
+}
+
+.region-hero .block {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========================================
+   PAGE TITLE
+======================================== */
+
+.page-title {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.page-title:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+/* ========================================
+   SIDEBAR BLOCKS
+======================================== */
+
+.region-sidebar-first .block,
+.region-sidebar-second .block {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+}
+
+.region-sidebar-first .block h2,
+.region-sidebar-second .block h2 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+  color: #2c3e50;
+}
+
+/* ========================================
+   CONTENT BLOCKS
+======================================== */
+
+.region-content .block {
+  margin-bottom: 40px;
+}
+
+/* ========================================
+   HIGHLIGHTED REGION
+======================================== */
+
+.region-highlighted {
+  background: #fff9e6;
+  border-left: 4px solid #ffc107;
+  padding: 20px 25px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+}
+
+/* ========================================
+   VIEWS STYLING
+======================================== */
+
+.view-content {
+  margin-top: 30px;
+}
+
+.views-row {
+  margin-bottom: 30px;
+}
+
+/* ========================================
+   DRUPAL ADMIN
+======================================== */
+
+.layout-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Admin toolbar spacing */
+body.toolbar-horizontal {
+  padding-top: 0 !important;
+}
+
+/* ========================================
+   RESPONSIVE IMAGES
+======================================== */
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+.image-style-large,
+.image-style-medium,
+.image-style-thumbnail {
+  border-radius: 8px;
+}
+
+/* ========================================
+   SMOOTH ANIMATIONS
+======================================== */
+
+.fade-in {
+  animation: fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+======================================== */
+
+@media print {
+  #header,
+  #footer,
+  .region-sidebar-first,
+  .region-sidebar-second,
+  .tabs,
+  .breadcrumb {
+    display: none;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+}

@@ -1,0 +1,43 @@
+<div class="service-page find-hospitals">
+  <div class="page-banner">
+    <div class="container">
+      <h1><i class="fas fa-hospital"></i> Find Hospitals Near You</h1>
+      <p>Discover top-rated hospitals and healthcare facilities</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="hospitals-list">
+      {% for hospital in hospitals %}
+        <div class="hospital-card">
+          <div class="hospital-header">
+            <div>
+              <h3>{{ hospital.name }}</h3>
+              <p><i class="fas fa-map-marker-alt"></i> {{ hospital.location }}</p>
+            </div>
+            <div class="rating">
+              <i class="fas fa-star"></i> {{ hospital.rating }}
+            </div>
+          </div>
+          
+          <div class="hospital-info">
+            <div class="info-item">
+              <strong>Specialties:</strong>
+              {% for spec in hospital.specialties %}
+                <span class="badge badge-primary">{{ spec }}</span>
+              {% endfor %}
+            </div>
+            <div class="info-item">
+              <strong>Beds:</strong> {{ hospital.beds }}
+            </div>
+          </div>
+          
+          <div class="hospital-actions">
+            <a href="{{ practo_safe_internal('/doctors', {'hospital': hospital.id}) }}" class="btn btn-outline-primary">View Doctors</a>
+            <a href="tel:+911234567890" class="btn btn-success">Call Now</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

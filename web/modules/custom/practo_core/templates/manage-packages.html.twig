@@ -1,0 +1,73 @@
+{#
+/**
+ * @file
+ * Manage Health Packages - Full CRUD
+ */
+#}
+
+<div class="manage-content-page">
+  
+  <div class="page-header-admin">
+    <div>
+      <h1><i class="fas fa-box"></i> Manage Health Packages (CRUD)</h1>
+      <p>Create, Read, Update, Delete health packages</p>
+    </div>
+    <a href="{{ practo_safe_route('node.add', {'node_type': 'health_package'}) }}" class="btn btn-success btn-lg">
+      <i class="fas fa-plus"></i> Add New Package
+    </a>
+  </div>
+  
+  {% if packages is empty %}
+    <div class="empty-state-admin">
+      <i class="fas fa-box-open fa-5x"></i>
+      <h3>No Packages Found</h3>
+      <p>Start by adding your first health package</p>
+      <a href="{{ practo_safe_route('node.add', {'node_type': 'health_package'}) }}" class="btn btn-primary btn-lg">Add Package Now</a>
+    </div>
+  {% else %}
+    <div class="crud-table-wrapper">
+      <table class="crud-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Package Name</th>
+            <th>Tests</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Status</th>
+            <th>Actions (CRUD)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pkg in packages %}
+            <tr>
+              <td>#{{ pkg.id }}</td>
+              <td><strong>{{ pkg.name }}</strong></td>
+              <td>{{ pkg.tests }} tests</td>
+              <td>₹{{ pkg.price }}</td>
+              <td>{{ pkg.discount }}%</td>
+              <td>
+                <span class="status-badge {{ pkg.status == 'Active' ? 'active' : 'inactive' }}">
+                  {{ pkg.status }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <a href="{{ pkg.edit_url }}" class="action-btn-small edit" title="Update/Edit">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a href="{{ pkg.delete_url }}" class="action-btn-small delete" title="Delete" onclick="return confirm('Delete this package?')">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="table-footer">
+      <p>Total Packages: <strong>{{ packages|length }}</strong></p>
+    </div>
+  {% endif %}
+  
+</div>

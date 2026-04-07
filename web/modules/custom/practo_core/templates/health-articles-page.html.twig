@@ -1,0 +1,26 @@
+<div class="service-page health-articles">
+  <div class="page-banner">
+    <div class="container">
+      <h1><i class="fas fa-newspaper"></i> Health Articles & Tips</h1>
+      <p>Expert health advice and wellness tips</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="articles-grid-page">
+      {% for article in articles %}
+        <article class="article-item">
+          <div class="article-category-tag">{{ article.category }}</div>
+          <h3>{{ article.title }}</h3>
+          <div class="article-meta">
+            <span><i class="fas fa-user"></i> {{ article.author }}</span>
+            <span><i class="fas fa-calendar"></i> {{ article.date }}</span>
+            <span><i class="fas fa-clock"></i> {{ article.read_time }}</span>
+          </div>
+          <p>{{ article.excerpt }}</p>
+          <a href="{{ practo_safe_internal('/articles/' ~ article.id) }}" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</div>

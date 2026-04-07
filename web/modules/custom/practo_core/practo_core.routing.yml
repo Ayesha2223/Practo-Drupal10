@@ -1,0 +1,363 @@
+practo_core.user_register_override:
+  path: '/user/register'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\UserRegistrationController::registerSelection'
+    _title: 'Register'
+  requirements:
+    _access: 'TRUE'
+
+practo_core.register_selection:
+  path: '/register'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\UserRegistrationController::registerSelection'
+    _title: 'Register'
+  requirements:
+    _access: 'TRUE'
+
+practo_core.register_doctor:
+  path: '/register/doctor'
+  defaults:
+    _form: '\Drupal\practo_core\Form\DoctorRegistrationForm'
+    _title: 'Register as Doctor'
+  requirements:
+    _access: 'TRUE'
+
+practo_core.register_patient:
+  path: '/register/patient'
+  defaults:
+    _form: '\Drupal\practo_core\Form\PatientRegistrationForm'
+    _title: 'Register as Patient'
+  requirements:
+    _access: 'TRUE'
+
+practo_core.dashboard_redirect:
+  path: '/dashboard'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DashboardRedirectController::redirectDashboard'
+    _title: 'Dashboard'
+  requirements:
+    _role: 'authenticated'
+
+practo_core.doctor_dashboard:
+  path: '/doctor/dashboard'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorDashboardController::dashboard'
+    _title: 'Doctor Dashboard'
+  requirements:
+    _role: 'authenticated'
+
+practo_core.dashboard:
+  path: '/user/dashboard'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DashboardController::dashboard'
+    _title: 'My Dashboard'
+  requirements:
+    _role: 'authenticated'
+
+practo_core.edit_profile:
+  path: '/user/profile/edit'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DashboardController::editProfile'
+    _title: 'Edit Profile'
+  requirements:
+    _role: 'authenticated'
+
+practo_core.my_appointments:
+  path: '/user/appointments'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AppointmentController::myAppointments'
+    _title: 'My Appointments'
+  requirements:
+    _role: 'authenticated'
+
+practo_core.admin_dashboard:
+  path: '/admin/practo/dashboard'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::dashboard'
+    _title: 'Practo Admin Dashboard'
+  requirements:
+    _permission: 'administer site configuration'
+
+practo_core.manage_doctors:
+  path: '/admin/practo/doctors'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::manageDoctors'
+    _title: 'Manage Doctors'
+  requirements:
+    _permission: 'administer site configuration'
+
+practo_core.manage_appointments:
+  path: '/admin/practo/appointments'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::manageAppointments'
+    _title: 'Manage Appointments'
+  requirements:
+    _permission: 'administer site configuration'
+
+practo_core.manage_packages:
+  path: '/admin/practo/packages'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::managePackages'
+    _title: 'Manage Health Packages'
+  requirements:
+    _permission: 'administer site configuration'
+
+practo_core.manage_articles:
+  path: '/admin/practo/articles'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::manageArticles'
+    _title: 'Manage Health Articles'
+  requirements:
+    _permission: 'administer site configuration'
+
+practo_core.admin_stats:
+  path: '/admin/practo/dashboard/stats'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::getStatsAjax'
+    _title: 'Get Dashboard Statistics'
+  requirements:
+    _permission: 'administer site configuration'
+  methods: [GET]
+
+practo_core.admin_change_status:
+  path: '/admin/practo/{type}/{id}/status'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::changeStatus'
+    _title: 'Change Record Status'
+  requirements:
+    _permission: 'administer site configuration'
+  methods: [POST]
+
+practo_core.admin_bulk_actions:
+  path: '/admin/practo/bulk-actions'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::bulkActions'
+    _title: 'Bulk Actions'
+  requirements:
+    _permission: 'administer site configuration'
+  methods: [POST]
+
+practo_core.admin_quick_search:
+  path: '/admin/practo/search'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AdminDashboardController::quickSearch'
+    _title: 'Quick Search'
+  requirements:
+    _permission: 'administer site configuration'
+  methods: [GET]
+
+practo_core.homepage:
+  path: '/practo-home'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HomeController::homepage'
+    _title: 'Healthcare at Your Fingertips'
+  requirements:
+    _permission: 'access content'
+
+practo_core.doctor_list:
+  path: '/doctors'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorController::doctorList'
+    _title: 'Find Doctors'
+  requirements:
+    _permission: 'access content'
+
+practo_core.doctor_detail:
+  path: '/doctor/{doctor}'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorController::doctorDetail'
+    _title_callback: '\Drupal\practo_core\Controller\DoctorController::doctorTitle'
+  requirements:
+    _permission: 'access content'
+    doctor: \d+
+
+practo_core.search_doctors:
+  path: '/search-doctors'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorController::searchDoctors'
+    _title: 'Search Results'
+  requirements:
+    _permission: 'access content'
+
+practo_core.book_appointment:
+  path: '/book-appointment/{doctor}'
+  defaults:
+    _form: '\Drupal\practo_core\Form\AppointmentBookingForm'
+    _title: 'Book Appointment'
+  requirements:
+    _role: 'authenticated'
+    doctor: \d+
+
+practo_core.cancel_appointment:
+  path: '/appointment/{appointment}/cancel'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AppointmentController::cancelAppointment'
+  requirements:
+    _role: 'authenticated'
+    appointment: \d+
+
+practo_core.confirm_appointment:
+  path: '/appointment/{appointment}/confirm'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AppointmentController::confirmAppointment'
+  requirements:
+    _role: 'authenticated'
+    appointment: \d+
+
+practo_core.reject_appointment:
+  path: '/appointment/{appointment}/reject'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\AppointmentController::rejectAppointment'
+  requirements:
+    _role: 'authenticated'
+    appointment: \d+
+
+practo_core.health_checkups:
+  path: '/health-checkups'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::healthCheckups'
+    _title: 'Health Checkup Packages'
+  requirements:
+    _permission: 'access content'
+
+practo_core.consult_online:
+  path: '/consult-online'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::consultOnline'
+    _title: 'Consult Doctors Online'
+  requirements:
+    _permission: 'access content'
+
+practo_core.find_hospitals:
+  path: '/find-hospitals'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::findHospitals'
+    _title: 'Find Hospitals Near You'
+  requirements:
+    _permission: 'access content'
+
+practo_core.medicines:
+  path: '/medicines'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::medicines'
+    _title: 'Order Medicines Online'
+  requirements:
+    _permission: 'access content'
+
+practo_core.lab_tests:
+  path: '/lab-tests'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::labTests'
+    _title: 'Book Lab Tests'
+  requirements:
+    _permission: 'access content'
+
+practo_core.health_articles:
+  path: '/health-articles'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::healthArticles'
+    _title: 'Health Articles & Tips'
+  requirements:
+    _permission: 'access content'
+
+practo_core.health_services:
+  path: '/health-services'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\PageController::healthServices'
+    _title: 'Health Services'
+  requirements:
+    _access: 'TRUE'
+
+practo_core.doctor_verification:
+  path: '/admin/practo/doctor-verification'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorVerificationController::verificationDashboard'
+    _title: 'Doctor Verification'
+  requirements:
+    _permission: 'administer site configuration'
+
+practo_core.doctor_verify:
+  path: '/admin/practo/doctor-verification/{doctor}/verify'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorVerificationController::verifyDoctor'
+    _title: 'Verify Doctor'
+  requirements:
+    _permission: 'administer site configuration'
+    doctor: \d+
+
+practo_core.doctor_reject:
+  path: '/admin/practo/doctor-verification/{doctor}/reject'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorVerificationController::rejectDoctor'
+    _title: 'Reject Doctor'
+  requirements:
+    _permission: 'administer site configuration'
+    doctor: \d+
+
+practo_core.doctor_verification_details:
+  path: '/admin/practo/doctor-verification/{doctor}/details'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorVerificationController::viewDoctorDetails'
+    _title: 'Doctor Verification Details'
+  requirements:
+    _permission: 'administer site configuration'
+    doctor: \d+
+
+practo_core.doctor_batch_verify:
+  path: '/admin/practo/doctor-verification/batch-verify'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\DoctorVerificationController::batchVerify'
+    _title: 'Batch Verify Doctors'
+  requirements:
+    _permission: 'administer site configuration'
+    _method: 'POST'
+
+practo_core.book_package:
+  path: '/book-package/{package_id}'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::bookPackage'
+    _title: 'Book Health Package'
+  requirements:
+    _permission: 'access content'
+    package_id: \d+
+
+practo_core.view_article:
+  path: '/articles/{article_id}'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\HealthServicesController::viewArticle'
+    _title: 'Health Article'
+  requirements:
+    _permission: 'access content'
+    article_id: \d+
+
+practo_core.privacy_policy:
+  path: '/privacy-policy'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\PageController::privacyPolicy'
+    _title: 'Privacy Policy'
+  requirements:
+    _permission: 'access content'
+
+practo_core.terms:
+  path: '/terms'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\PageController::terms'
+    _title: 'Terms of Service'
+  requirements:
+    _permission: 'access content'
+
+practo_core.settings:
+  path: '/admin/config/practo'
+  defaults:
+    _form: '\Drupal\practo_core\Form\PractoCoreConfigForm'
+    _title: 'Practo Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+practo_core.contact:
+  path: '/contact'
+  defaults:
+    _controller: '\Drupal\practo_core\Controller\PageController::contact'
+    _title: 'Contact Us'
+  requirements:
+    _permission: 'access content'

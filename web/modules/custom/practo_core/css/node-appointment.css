@@ -1,0 +1,52 @@
+/* Appointment Node Styles */
+
+.node--type-appointment {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.appointment-full-view {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.appointment-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #1976d2;
+}
+
+.booking-id {
+  font-size: 18px;
+  color: #666;
+}
+
+.appointment-status-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.appointment-section {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.appointment-section h2 {
+  margin-top: 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.appointment-section p {
+  margin: 8px 0;
+}

@@ -1,0 +1,22 @@
+name: 'Practo Core'
+type: module
+description: 'Core functionality for Practo healthcare platform - handles doctors, appointments, and bookings'
+core_version_requirement: ^10
+package: 'Practo Custom'
+
+dependencies:
+  - drupal:node
+  - drupal:user
+  - drupal:field
+  - drupal:text
+  - drupal:datetime
+  - drupal:link
+  - drupal:image
+  - drupal:file
+  - drupal:options
+  - drupal:views
+  - drupal:block
+  - token:token
+  - pathauto:pathauto
+
+configure: practo_core.settings

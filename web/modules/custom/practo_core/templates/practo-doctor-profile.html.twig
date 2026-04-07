@@ -1,0 +1,76 @@
+<div class="doctor-profile-page">
+  <div class="doctor-profile-hero">
+    <div class="doctor-profile-photo">
+      {% set _n = data.name|default('')|trim %}
+      {% set _parts = _n ? _n|split(' ') : [] %}
+      {% set _first = _parts|length > 0 ? (_parts|first) : '' %}
+      {% set _last = _parts|length > 1 ? (_parts|last) : '' %}
+      {% set _initials = ((_first|slice(0, 1)) ~ (_last ? _last|slice(0, 1) : ''))|upper %}
+      <div class="doctor-avatar doctor-avatar--lg" aria-label="Dr. {{ data.name }}">
+        <span class="doctor-avatar__text">{{ _initials ?: 'DR' }}</span>
+      </div>
+    </div>
+
+    <div class="doctor-profile-main">
+      <h1>Dr. {{ data.name }}</h1>
+
+      <div class="doctor-meta">
+        {% if data.specialization_label %}
+          <span><i class="fas fa-stethoscope"></i> {{ data.specialization_label }}</span>
+        {% endif %}
+        {% if data.experience is not null %}
+          <span><i class="fas fa-briefcase"></i> {{ data.experience }} yrs</span>
+        {% endif %}
+        {% if data.city %}
+          <span><i class="fas fa-location-dot"></i> {{ data.city }}</span>
+        {% endif %}
+      </div>
+
+      <div class="doctor-cta">
+        {{ data.book_link|raw }}
+      </div>
+    </div>
+  </div>
+
+  <div class="doctor-profile-sections">
+    <div class="section-card">
+      <h2>About & Clinic</h2>
+      {% if data.about %}
+        <p>{{ data.about }}</p>
+      {% endif %}
+
+      <div class="kv">
+        <div class="k">Clinic</div>
+        <div class="v">{{ data.clinic_name ?: 'Not specified' }}</div>
+
+        <div class="k">Address</div>
+        <div class="v">{{ data.clinic_address ?: 'Not specified' }}</div>
+
+        <div class="k">Fee</div>
+        <div class="v">₹{{ data.fee }}</div>
+      </div>
+    </div>
+
+    <div class="section-card">
+      <h2>Contact & Availability</h2>
+
+      <div class="kv">
+        <div class="k">Phone</div>
+        <div class="v">{{ data.phone ?: 'Not specified' }}</div>
+
+        <div class="k">Email</div>
+        <div class="v">{{ data.email ?: 'Not specified' }}</div>
+
+        <div class="k">Days</div>
+        <div class="v">{{ data.available_days ?: 'Not specified' }}</div>
+
+        <div class="k">Hours</div>
+        <div class="v">{{ data.consultation_hours ?: 'Not specified' }}</div>
+      </div>
+
+      {% if data.languages %}
+        <p><strong>Languages:</strong> {{ data.languages }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>

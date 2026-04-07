@@ -1,0 +1,8 @@
+name: Practo Appointments
+type: module
+description: 'Handles appointment booking logic and validations'
+core_version_requirement: ^10
+package: Custom
+dependencies:
+  - drupal:node
+  - drupal:user

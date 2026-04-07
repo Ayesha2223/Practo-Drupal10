@@ -1,0 +1,20 @@
+.my-appointments-page{max-width:1100px;margin:0 auto;padding:30px 15px}
+.my-appointments-page h1{margin:0 0 16px;font-size:28px;font-weight:900;color:#111827}
+.appointments-tabs{display:flex;gap:10px;margin:14px 0 18px}
+.tab-btn{border:1px solid #e5e7eb;background:#fff;color:#374151;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}
+.tab-btn.active{background:#eef2ff;border-color:#c7d2fe;color:#3730a3}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.appointments-list{display:grid;grid-template-columns:1fr;gap:12px}
+.appointment-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.appointment-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.appointment-header h3{margin:0;font-size:16px;font-weight:900;color:#111827}
+.status-badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-weight:900;font-size:12px}
+.status-pending{background:#fef3c7;color:#92400e}
+.status-confirmed{background:#dcfce7;color:#166534}
+.status-completed{background:#dbeafe;color:#1e40af}
+.status-cancelled{background:#fee2e2;color:#991b1b}
+.appointment-details p{margin:6px 0;color:#374151}
+.appointment-actions a{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border-radius:10px;text-decoration:none;font-weight:900;background:#fee2e2;color:#991b1b}
+.empty-state,.no-appointments{text-align:center;background:#fff;border:1px dashed #d1d5db;border-radius:14px;padding:26px;color:#6b7280}
+.empty-state .btn,.no-appointments .btn{display:inline-flex;margin-top:12px;padding:10px 14px;border-radius:10px;text-decoration:none;font-weight:900;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff}

@@ -1,0 +1,44 @@
+{#
+/**
+ * @file
+ * Template for doctor listing page.
+ *
+ * Available variables:
+ * - filter_form: The filter form render array
+ * - doctors: Array of doctor cards
+ * - total_count: Total number of doctors
+ */
+#}
+
+<div class="doctor-listing-page">
+  
+  <div class="page-header">
+    <h1>Find the Right Doctor for You</h1>
+    <p class="subtitle">Choose from our network of experienced healthcare professionals</p>
+  </div>
+  
+  <div class="filter-section">
+    {{ filter_form }}
+  </div>
+  
+  <div class="results-header">
+    <p class="results-count">
+      <strong>{{ total_count }}</strong> doctor{% if total_count != 1 %}s{% endif %} found
+    </p>
+  </div>
+  
+  <div class="doctors-grid">
+    {% if doctors is empty %}
+      <div class="no-results">
+        <i class="fas fa-search fa-3x"></i>
+        <h3>No doctors found</h3>
+        <p>Try adjusting your search filters</p>
+      </div>
+    {% else %}
+      {% for doctor in doctors %}
+        {{ doctor }}
+      {% endfor %}
+    {% endif %}
+  </div>
+  
+</div>

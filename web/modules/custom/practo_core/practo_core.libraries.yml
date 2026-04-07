@@ -1,0 +1,141 @@
+global-styling:
+  version: 1.x
+  css:
+    theme:
+      https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css: { type: external, minified: true }
+  js:
+    js/practo-core.js: {}
+
+# Doctor listing styles
+doctor-listing:
+  version: 1.x
+  css:
+    theme:
+      css/doctor-listing.css: {}
+  dependencies:
+    - practo_core/global-styling
+
+
+doctor-profile:
+  version: 1.x
+  css:
+    theme:
+      css/doctor-profile.css: {}
+  dependencies:
+    - practo_core/global-styling
+
+appointments:
+  version: 1.x
+  css:
+    theme:
+      css/appointments.css: {}
+  js:
+    js/appointments.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+booking-form:
+  version: 1.x
+  css:
+    theme:
+      css/booking-form.css: {}
+
+doctor-search-block:
+  version: 1.x
+  css:
+    theme:
+      css/doctor-filter.css: {}
+
+featured-doctors-block:
+  version: 1.x
+  css:
+    theme:
+      css/homepage-full.css: {}
+
+appointment-stats-block:
+  version: 1.x
+  css:
+    theme:
+      css/admin-dashboard.css: {}
+  js:
+    js/admin-dashboard.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+doctor-filter:
+  version: 1.x
+  css:
+    theme:
+      css/doctor-filter.css: {}
+
+homepage-full:
+  version: 1.x
+  css:
+    theme:
+      css/homepage-full.css: {}
+  js:
+    js/homepage-full.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/once
+    - practo_core/global-styling
+
+admin-dashboard:
+  version: 1.x
+  css:
+    theme:
+      css/admin-dashboard.css: {}
+  js:
+    js/admin-dashboard.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+doctor-verification:
+  version: 1.x
+  css:
+    theme:
+      css/admin-dashboard.css: {}
+
+node-doctor-styling:
+  version: 1.x
+  css:
+    theme:
+      css/doctor-profile.css: {}
+
+node-appointment-styling:
+  version: 1.x
+  css:
+    theme:
+      css/appointments.css: {}
+
+placeholder-pages:
+  version: 1.x
+  css:
+    theme:
+      css/health-services.css: {}
+
+registration-forms:
+  version: 1.x
+  css:
+    theme:
+      css/auth-forms.css: {}
+
+doctor-dashboard:
+  version: 1.x
+  css:
+    theme:
+      css/doctor-dashboard.css: {}
+  dependencies:
+    - practo_core/global-styling
+
+health-services-page:
+  version: 1.x
+  css:
+    theme:
+      css/health-services.css: {}
+  dependencies:
+    - practo_core/global-styling

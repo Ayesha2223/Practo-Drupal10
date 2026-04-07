@@ -1,0 +1,47 @@
+
+# Global styling
+global-styling:
+  version: 1.x
+  css:
+    base:
+      https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css: { type: external, minified: true }
+      css/base.css: {}
+    layout:
+      css/layout.css: {}
+    component:
+      css/components.css: {}
+    theme:
+      css/telephasic-style.css: {}
+      css/navigation.css: {}
+      css/footer.css: {}
+  js:
+    js/theme.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+    - core/drupal.ajax
+    - core/drupal.dialog
+    - core/drupal.dialog.ajax
+
+# User pages (login, register)
+user-pages:
+  version: 1.x
+  css:
+    theme:
+      css/practo-registration.css: {}
+      css/user-pages.css: {}
+  js:
+    js/user-pages.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupal.ajax
+
+
+user-forms:
+  css:
+    theme:
+      css/practo-registration.css: {}
+  dependencies:
+    - core/drupal

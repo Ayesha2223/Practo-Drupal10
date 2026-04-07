@@ -1,0 +1,64 @@
+
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\node\NodeInterface;
+use Drupal\user\UserInterface;
+
+/**
+ * Implements hook_form_alter().
+ * Adds validation to appointment form.
+ */
+function practo_appointments_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id === 'node_appointment_form' || $form_id === 'node_appointment_edit_form') {
+    $form['#validate'][] = 'practo_appointments_validate_booking';
+  }
+}
+
+/**
+ * Validates appointment booking.
+ * Prevents double-booking of same doctor at same time.
+ */
+function practo_appointments_validate_booking(&$form, FormStateInterface $form_state) {
+  // Defensive reads from form state.
+  $doctor_value = $form_state->getValue('field_doctor');
+  $date_value   = $form_state->getValue('field_appointment_date');
+  $time_value   = $form_state->getValue('field_appointment_time');
+
+  $doctor_id = (!empty($doctor_value[0]['target_id'])) ? (int) $doctor_value[0]['target_id'] : NULL;
+  $date      = (!empty($date_value[0]['value']))       ? $date_value[0]['value']               : NULL;
+  $time      = (!empty($time_value[0]['value']))       ? $time_value[0]['value']               : NULL;
+
+  if (!$doctor_id || !$date || !$time) {
+    // If any required field is missing, let core handle required validation,
+    // or add your own:
+    return;
+  }
+
+  // Build query to check existing appointments for same doctor/date/time.
+  $query = \Drupal::entityQuery('node')
+    ->condition('type', 'appointment')
+    ->condition('field_doctor', $doctor_id)
+    ->condition('field_appointment_date', $date)
+    ->condition('field_appointment_time', $time)
+    ->accessCheck(FALSE);
+
+  // Exclude current appointment if editing.
+  $current_entity = $form_state->getFormObject()->getEntity();
+  if ($current_entity && $current_entity->id()) {
+    $query->condition('nid', $current_entity->id(), '!=');
+  }
+
+  // Optional: Exclude cancelled.
+  if ($form_state->hasValue('field_status')) {
+    $query->condition('field_status', ['cancelled'], 'NOT IN');
+  }
+
+  $existing = $query->execute();
+
+  if (!empty($existing)) {
+    $form_state->setErrorByName('field_appointment_time',
+      t('This time slot is already booked. Please select another time.'));
+  }
+}

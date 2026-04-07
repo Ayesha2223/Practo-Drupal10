@@ -1,0 +1,41 @@
+<div class="service-page health-checkups">
+  <div class="page-banner">
+    <div class="container">
+      <h1><i class="fas fa-clinic-medical"></i> Health Checkup Packages</h1>
+      <p>Comprehensive health screening at affordable prices</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <div class="packages-listing">
+      {% for package in packages %}
+        <div class="package-detail-card">
+          <span class="discount-tag">{{ package.discount }}% OFF</span>
+          <h3>{{ package.name }}</h3>
+          <p class="package-desc">{{ package.description }}</p>
+          
+          <div class="package-meta">
+            <span><i class="fas fa-vial"></i> {{ package.tests }} Tests</span>
+            <span><i class="fas fa-clock"></i> Reports in 24-48 hrs</span>
+          </div>
+          
+          <div class="price-section">
+            <span class="old-price">₹{{ package.original_price }}</span>
+            <span class="new-price">₹{{ package.price }}</span>
+          </div>
+          
+          <div class="includes-list">
+            <strong>Includes:</strong>
+            <ul>
+              {% for item in package.includes %}
+                <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          
+          <a href="{{ practo_safe_internal('/book-package/' ~ package.id) }}" class="btn btn-success btn-block">Book Now</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

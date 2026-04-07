@@ -1,0 +1,37 @@
+<div class="service-page lab-tests">
+  <div class="page-banner">
+    <div class="container">
+      <h1><i class="fas fa-flask"></i> Book Lab Tests at Home</h1>
+      <p>Certified labs | Free sample pickup | Online reports</p>
+    </div>
+  </div>
+  
+  <div class="container">
+    <h2 class="section-title">Popular Lab Tests</h2>
+    
+    <div class="tests-grid">
+      {% for test in tests %}
+        <div class="test-card">
+          <h4>{{ test.name }}</h4>
+          <p>{{ test.description }}</p>
+          
+          <div class="test-details">
+            <span><i class="fas fa-vial"></i> {{ test.sample }}</span>
+            <span><i class="fas fa-clock"></i> {{ test.reports_in }}</span>
+          </div>
+          
+          <div class="test-price">
+            <span class="price">₹{{ test.price }}</span>
+            <button class="btn btn-success btn-sm">Book Now</button>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    
+    <div class="cta-section">
+      <h3>Need help choosing tests?</h3>
+      <p>Our experts can guide you to select the right tests</p>
+      <button class="btn btn-primary btn-lg">Talk to Expert</button>
+    </div>
+  </div>
+</div>
